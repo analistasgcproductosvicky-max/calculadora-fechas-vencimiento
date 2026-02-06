@@ -67,13 +67,26 @@ function calcularVencimientoExito() {
 function calcularVencimientoNormal(prod) {
   const vida = parseInt(prod["Vida Útil"]);
   const unidad = prod["UNM"].toLowerCase();
-  let fecha = new Date();
+  let fecha;
 
-  if (unidad.includes("día")) {
-    fecha.setDate(fecha.getDate() + vida);
-  } else if (unidad.includes("mes")) {
+  const hoy = new Date();
+
+  if (unidad.includes("mes")) {
+    // 🔹 LÓGICA DEL ÚLTIMO 25 (IGUAL A EXCEL)
+    if (hoy.getDate() >= 25) {
+      fecha = new Date(hoy.getFullYear(), hoy.getMonth(), 25);
+    } else {
+      fecha = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
+    }
+
     fecha.setMonth(fecha.getMonth() + vida);
+  }
+
+  else if (unidad.includes("día")) {
+    fecha = new Date();
+    fecha.setDate(fecha.getDate() + vida);
   }
 
   return fecha.toISOString().split("T")[0];
 }
+
