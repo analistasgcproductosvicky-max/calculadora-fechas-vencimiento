@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Vida Útil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Consulta por Referencia</h2>
+
+<label>Referencia del producto</label>
+<select id="referencia">
+  <option value="">Seleccione una referencia</option>
+</select>
+
+<button onclick="buscar()">Buscar</button>
+
+<div id="bloqueProduccion" style="display:none;">
+  <label>Fecha de producción (solo Éxito)</label>
+  <input type="date" id="fechaProduccion" onchange="calcularVencimientoExito()">
+</div>
+
+<div class="resultado">
+  <p><strong>Cliente:</strong> <span id="cliente"></span></p>
+  <p><strong>Vida útil:</strong> <span id="vida"></span></p>
+  <p><strong>Unidad:</strong> <span id="unidad"></span></p>
+  <p><strong>Inicio vida útil:</strong> <span id="inicio"></span></p>
+  <p><strong>Embalaje:</strong> <span id="embalaje"></span></p>
+  <p><strong>Fecha de vencimiento:</strong> <span id="vencimiento"></span></p>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
