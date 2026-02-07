@@ -15,19 +15,43 @@ fetch("productos.csv")
       productos.push(obj);
     }
 
-    cargarReferencias();
+    mostrarFechaHoy();
+    cargarClientes();
   })
   .catch(error => console.error("Error cargando CSV:", error));
 
-function cargarReferencias() {
-  const select = document.getElementById("referencia");
+function mostrarFechaHoy() {
+  const hoy = new Date();
+  document.getElementById("fechaHoy").innerText =
+    hoy.toISOString().split("T")[0];
+}
 
-  productos.forEach(p => {
+function cargarClientes() {
+  const select = document.getElementById("clienteFiltro");
+  const clientesUnicos = [...new Set(productos.map(p => p["Cliente"]))];
+
+  clientesUnicos.forEach(cliente => {
     const option = document.createElement("option");
-    option.value = p["Descripción"];
-    option.textContent = p["Descripción"];
+    option.value = cliente;
+    option.textContent = cliente;
     select.appendChild(option);
   });
+}
+
+function filtrarReferencias() {
+  const clienteSel = document.getElementById("clienteFiltro").value;
+  const selectRef = document.getElementById("referencia");
+
+  selectRef.innerHTML = '<option value="">Seleccione una referencia</option>';
+
+  productos
+    .filter(p => p["Cliente"] === clienteSel)
+    .forEach(p => {
+      const option = document.createElement("option");
+      option.value = p["Descripción"];
+      option.textContent = p["Descripción"];
+      selectRef.appendChild(option);
+    });
 }
 
 function buscar() {
@@ -68,25 +92,21 @@ function calcularVencimientoNormal(prod) {
   const vida = parseInt(prod["Vida Útil"]);
   const unidad = prod["UNM"].toLowerCase();
   let fecha;
-
   const hoy = new Date();
 
   if (unidad.includes("mes")) {
-    // 🔹 LÓGICA DEL ÚLTIMO 25 (IGUAL A EXCEL)
     if (hoy.getDate() >= 25) {
       fecha = new Date(hoy.getFullYear(), hoy.getMonth(), 25);
     } else {
       fecha = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
     }
-
     fecha.setMonth(fecha.getMonth() + vida);
-  }
-
-  else if (unidad.includes("día")) {
+  } else if (unidad.includes("día")) {
     fecha = new Date();
     fecha.setDate(fecha.getDate() + vida);
   }
 
   return fecha.toISOString().split("T")[0];
 }
+
 
