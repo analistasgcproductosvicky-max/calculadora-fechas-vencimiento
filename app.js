@@ -22,8 +22,9 @@ fetch("productos.csv")
 
 function mostrarFechaHoy() {
   const hoy = new Date();
-  document.getElementById("fechaHoy").innerText =
-    hoy.toISOString().split("T")[0];
+  document.getElementById("fechaHoy").innerText = formatearFecha(
+    hoy.toISOString().split("T")[0]
+  );
 }
 
 function cargarClientes() {
@@ -73,7 +74,7 @@ function buscar() {
   } else {
     document.getElementById("bloqueProduccion").style.display = "none";
     document.getElementById("vencimiento").innerText =
-      calcularVencimientoNormal(prod);
+      formatearFecha(calcularVencimientoNormal(prod));
   }
 }
 
@@ -82,10 +83,10 @@ function calcularVencimientoExito() {
   if (!fechaProd) return;
 
   let fecha = new Date(fechaProd);
-  fecha.setDate(fecha.getDate() + 149);
+  fecha.setDate(fecha.getDate() + 150);
 
   document.getElementById("vencimiento").innerText =
-    fecha.toISOString().split("T")[0];
+    formatearFecha(fecha.toISOString().split("T")[0]);
 }
 
 function calcularVencimientoNormal(prod) {
@@ -109,5 +110,8 @@ function calcularVencimientoNormal(prod) {
   return fecha.toISOString().split("T")[0];
 }
 
-
+function formatearFecha(fechaISO) {
+  const [yyyy, mm, dd] = fechaISO.split("-");
+  return `${dd}/${mm}/${yyyy}`;
+}
 
