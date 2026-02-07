@@ -8,7 +8,14 @@
 </head>
 <body>
 
-<h2>Consulta por Referencia</h2>
+<h2>Consulta de Vida Útil</h2>
+
+<p><strong>Fecha de hoy:</strong> <span id="fechaHoy"></span></p>
+
+<label>Cliente</label>
+<select id="clienteFiltro" onchange="filtrarReferencias()">
+  <option value="">Seleccione un cliente</option>
+</select>
 
 <label>Referencia del producto</label>
 <select id="referencia">
@@ -34,3 +41,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
