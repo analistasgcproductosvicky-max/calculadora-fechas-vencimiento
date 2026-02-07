@@ -107,7 +107,7 @@ function calcularVencimientoExito() {
 
   const [yyyy, mm, dd] = fechaProd.split("-");
   let fecha = new Date(yyyy, mm - 1, dd);
-  fecha.setDate(fecha.getDate() + 150);
+  fecha.setDate(fecha.getDate() + 149);
 
   document.getElementById("vencimiento").innerText = formatearFecha(fecha);
 }
@@ -146,6 +146,7 @@ function formatearFecha(fecha) {
   const yyyy = fecha.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 }
+
 
 
 
