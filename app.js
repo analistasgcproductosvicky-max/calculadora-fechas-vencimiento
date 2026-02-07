@@ -82,7 +82,7 @@ function calcularVencimientoExito() {
   if (!fechaProd) return;
 
   let fecha = new Date(fechaProd);
-  fecha.setDate(fecha.getDate() + 150);
+  fecha.setDate(fecha.getDate() + 149);
 
   document.getElementById("vencimiento").innerText =
     fecha.toISOString().split("T")[0];
@@ -108,5 +108,6 @@ function calcularVencimientoNormal(prod) {
 
   return fecha.toISOString().split("T")[0];
 }
+
 
 
