@@ -122,11 +122,7 @@ function calcularVencimientoNormal(prod) {
     fecha = new Date();
     fecha.setDate(fecha.getDate() + vida);
   }
-
-  return fecha;
-}
-
-/* =======================
+  /* =======================
    FORMATO DD/MM/AAAA
 ======================= */
 function formatearFecha(fecha) {
@@ -135,5 +131,11 @@ function formatearFecha(fecha) {
   const yyyy = fecha.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 }
+
+  return fecha;
+}
+
+
+
 
 
