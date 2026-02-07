@@ -1,5 +1,8 @@
 let productos = [];
 
+/* =======================
+   CARGA CSV
+======================= */
 fetch("productos.csv")
   .then(response => response.text())
   .then(data => {
@@ -96,15 +99,15 @@ function buscar() {
 }
 
 /* =======================
-   ÉXITO → +149 DÍAS
+   ÉXITO → +150 DÍAS
 ======================= */
 function calcularVencimientoExito() {
   const fechaProd = document.getElementById("fechaProduccion").value;
   if (!fechaProd) return;
 
-  const partes = fechaProd.split("-");
-  let fecha = new Date(partes[0], partes[1] - 1, partes[2]);
-  fecha.setDate(fecha.getDate() + 149);
+  const [yyyy, mm, dd] = fechaProd.split("-");
+  let fecha = new Date(yyyy, mm - 1, dd);
+  fecha.setDate(fecha.getDate() + 150);
 
   document.getElementById("vencimiento").innerText = formatearFecha(fecha);
 }
@@ -115,10 +118,11 @@ function calcularVencimientoExito() {
 function calcularVencimientoNormal(prod) {
   const vida = parseInt(prod["Vida Útil"]);
   const unidad = prod["UNM"].toLowerCase();
-  let fecha;
   const hoy = new Date();
+  let fecha;
 
   if (unidad.includes("mes")) {
+    // regla del último 25
     if (hoy.getDate() >= 25) {
       fecha = new Date(hoy.getFullYear(), hoy.getMonth(), 25);
     } else {
@@ -126,10 +130,14 @@ function calcularVencimientoNormal(prod) {
     }
     fecha.setMonth(fecha.getMonth() + vida);
   } else if (unidad.includes("día")) {
-    fecha = new Date();
+    fecha = new Date(hoy);
     fecha.setDate(fecha.getDate() + vida);
   }
-  /* =======================
+
+  return fecha;
+}
+
+/* =======================
    FORMATO DD/MM/AAAA
 ======================= */
 function formatearFecha(fecha) {
@@ -137,9 +145,6 @@ function formatearFecha(fecha) {
   const mm = String(fecha.getMonth() + 1).padStart(2, "0");
   const yyyy = fecha.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
-}
-
-  return fecha;
 }
 
 
