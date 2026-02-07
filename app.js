@@ -33,12 +33,16 @@ function mostrarFechaHoy() {
 ======================= */
 function cargarClientes() {
   const select = document.getElementById("clienteFiltro");
-  const clientesUnicos = [...new Set(productos.map(p => p["Cliente"]))];
+  select.innerHTML = '<option value="">Seleccione un cliente</option>';
+
+  const clientesUnicos = [
+    ...new Set(productos.map(p => p["Cliente"].toLowerCase()))
+  ];
 
   clientesUnicos.forEach(cliente => {
     const option = document.createElement("option");
     option.value = cliente;
-    option.textContent = cliente;
+    option.textContent = cliente.toUpperCase();
     select.appendChild(option);
   });
 }
@@ -47,13 +51,16 @@ function cargarClientes() {
    FILTRAR REFERENCIAS
 ======================= */
 function filtrarReferencias() {
-  const clienteSel = document.getElementById("clienteFiltro").value;
-  const selectRef = document.getElementById("referencia");
+  const clienteSel = document
+    .getElementById("clienteFiltro")
+    .value
+    .toLowerCase();
 
+  const selectRef = document.getElementById("referencia");
   selectRef.innerHTML = '<option value="">Seleccione una referencia</option>';
 
   productos
-    .filter(p => p["Cliente"] === clienteSel)
+    .filter(p => p["Cliente"].toLowerCase() === clienteSel)
     .forEach(p => {
       const option = document.createElement("option");
       option.value = p["Descripción"];
@@ -134,6 +141,7 @@ function formatearFecha(fecha) {
 
   return fecha;
 }
+
 
 
 
