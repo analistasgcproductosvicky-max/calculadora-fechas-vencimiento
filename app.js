@@ -20,13 +20,17 @@ fetch("productos.csv")
   })
   .catch(error => console.error("Error cargando CSV:", error));
 
+/* =======================
+   FECHA DE HOY
+======================= */
 function mostrarFechaHoy() {
   const hoy = new Date();
-  document.getElementById("fechaHoy").innerText = formatearFecha(
-    hoy.toISOString().split("T")[0]
-  );
+  document.getElementById("fechaHoy").innerText = formatearFecha(hoy);
 }
 
+/* =======================
+   CARGA CLIENTES
+======================= */
 function cargarClientes() {
   const select = document.getElementById("clienteFiltro");
   const clientesUnicos = [...new Set(productos.map(p => p["Cliente"]))];
@@ -39,6 +43,9 @@ function cargarClientes() {
   });
 }
 
+/* =======================
+   FILTRAR REFERENCIAS
+======================= */
 function filtrarReferencias() {
   const clienteSel = document.getElementById("clienteFiltro").value;
   const selectRef = document.getElementById("referencia");
@@ -55,6 +62,9 @@ function filtrarReferencias() {
     });
 }
 
+/* =======================
+   BUSCAR PRODUCTO
+======================= */
 function buscar() {
   const ref = document.getElementById("referencia").value;
   const prod = productos.find(p => p["Descripción"] === ref);
@@ -73,22 +83,28 @@ function buscar() {
     document.getElementById("vencimiento").innerText = "";
   } else {
     document.getElementById("bloqueProduccion").style.display = "none";
-    document.getElementById("vencimiento").innerText =
-      formatearFecha(calcularVencimientoNormal(prod));
+    const fecha = calcularVencimientoNormal(prod);
+    document.getElementById("vencimiento").innerText = formatearFecha(fecha);
   }
 }
 
+/* =======================
+   ÉXITO → +149 DÍAS
+======================= */
 function calcularVencimientoExito() {
   const fechaProd = document.getElementById("fechaProduccion").value;
   if (!fechaProd) return;
 
-  let fecha = new Date(fechaProd);
-  fecha.setDate(fecha.getDate() + 150);
+  const partes = fechaProd.split("-");
+  let fecha = new Date(partes[0], partes[1] - 1, partes[2]);
+  fecha.setDate(fecha.getDate() + 149);
 
-  document.getElementById("vencimiento").innerText =
-    formatearFecha(fecha.toISOString().split("T")[0]);
+  document.getElementById("vencimiento").innerText = formatearFecha(fecha);
 }
 
+/* =======================
+   CLIENTES NORMALES
+======================= */
 function calcularVencimientoNormal(prod) {
   const vida = parseInt(prod["Vida Útil"]);
   const unidad = prod["UNM"].toLowerCase();
@@ -107,11 +123,17 @@ function calcularVencimientoNormal(prod) {
     fecha.setDate(fecha.getDate() + vida);
   }
 
-  return fecha.toISOString().split("T")[0];
+  return fecha;
 }
 
-function formatearFecha(fechaISO) {
-  const [yyyy, mm, dd] = fechaISO.split("-");
+/* =======================
+   FORMATO DD/MM/AAAA
+======================= */
+function formatearFecha(fecha) {
+  const dd = String(fecha.getDate()).padStart(2, "0");
+  const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+  const yyyy = fecha.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 }
+
 
