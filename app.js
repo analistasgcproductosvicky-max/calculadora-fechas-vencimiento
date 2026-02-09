@@ -20,8 +20,7 @@ fetch("productos.csv")
 
     mostrarFechaHoy();
     cargarClientes();
-  })
-  .catch(error => console.error("Error cargando CSV:", error));
+  });
 
 /* =======================
    FECHA DE HOY
@@ -32,48 +31,40 @@ function mostrarFechaHoy() {
 }
 
 /* =======================
-   CARGA CLIENTES
+   CLIENTES
 ======================= */
 function cargarClientes() {
   const select = document.getElementById("clienteFiltro");
   select.innerHTML = '<option value="">Seleccione un cliente</option>';
 
-  const clientesUnicos = [
-    ...new Set(productos.map(p => p["Cliente"].toLowerCase()))
-  ];
-
-  clientesUnicos.forEach(cliente => {
-    const option = document.createElement("option");
-    option.value = cliente;
-    option.textContent = cliente.toUpperCase();
-    select.appendChild(option);
+  [...new Set(productos.map(p => p["Cliente"]))].forEach(c => {
+    const o = document.createElement("option");
+    o.value = c;
+    o.textContent = c;
+    select.appendChild(o);
   });
 }
 
 /* =======================
-   FILTRAR REFERENCIAS
+   REFERENCIAS
 ======================= */
 function filtrarReferencias() {
-  const clienteSel = document
-    .getElementById("clienteFiltro")
-    .value
-    .toLowerCase();
-
-  const selectRef = document.getElementById("referencia");
-  selectRef.innerHTML = '<option value="">Seleccione una referencia</option>';
+  const cliente = document.getElementById("clienteFiltro").value;
+  const ref = document.getElementById("referencia");
+  ref.innerHTML = '<option value="">Seleccione una referencia</option>';
 
   productos
-    .filter(p => p["Cliente"].toLowerCase() === clienteSel)
+    .filter(p => p["Cliente"] === cliente)
     .forEach(p => {
-      const option = document.createElement("option");
-      option.value = p["Descripción"];
-      option.textContent = p["Descripción"];
-      selectRef.appendChild(option);
+      const o = document.createElement("option");
+      o.value = p["Descripción"];
+      o.textContent = p["Descripción"];
+      ref.appendChild(o);
     });
 }
 
 /* =======================
-   BUSCAR PRODUCTO
+   BUSCAR
 ======================= */
 function buscar() {
   const ref = document.getElementById("referencia").value;
@@ -85,66 +76,88 @@ function buscar() {
   document.getElementById("unidad").innerText = prod["UNM"];
   document.getElementById("inicio").innerText = prod["Inicio Vida Útil"];
   document.getElementById("embalaje").innerText = prod["Embalaje"];
+  document.getElementById("vencimiento").innerText = "";
+
+  document.getElementById("bloqueProduccion").style.display = "none";
+  document.getElementById("bloqueVidaVariable").style.display = "none";
 
   const cliente = prod["Cliente"].toLowerCase();
+  const inicio = prod["Inicio Vida Útil"].toLowerCase();
 
-  if (cliente === "exito" || cliente === "éxito") {
+  // CASO ÉXITO (149 días)
+  if (cliente.includes("exito") || cliente.includes("éxito")) {
     document.getElementById("bloqueProduccion").style.display = "block";
-    document.getElementById("vencimiento").innerText = "";
-  } else {
-    document.getElementById("bloqueProduccion").style.display = "none";
-    const fecha = calcularVencimientoNormal(prod);
+    document.getElementById("bloqueProduccion").dataset.modo = "exito";
+    return;
+  }
+
+  // CASO FECHA DE PRODUCCIÓN (MESES)
+  if (inicio.includes("producción")) {
+    document.getElementById("bloqueProduccion").style.display = "block";
+
+    if (prod["Vida Útil"].includes("12") && prod["Vida Útil"].includes("18")) {
+      document.getElementById("bloqueVidaVariable").style.display = "block";
+    }
+    return;
+  }
+
+  // CASO ÚLTIMO 25
+  if (inicio.includes("25")) {
+    const fecha = calcularUltimo25(prod);
     document.getElementById("vencimiento").innerText = formatearFecha(fecha);
   }
 }
 
+
 /* =======================
-   ÉXITO → +150 DÍAS
+   ÚLTIMO 25
 ======================= */
-function calcularVencimientoExito() {
-  const fechaProd = document.getElementById("fechaProduccion").value;
-  if (!fechaProd) return;
+function calcularUltimo25(prod) {
+  const vida = parseInt(prod["Vida Útil"]);
+  const hoy = new Date();
 
-  const [yyyy, mm, dd] = fechaProd.split("-");
-  let fecha = new Date(yyyy, mm - 1, dd);
-  fecha.setDate(fecha.getDate() + 149);
+  let base =
+    hoy.getDate() >= 25
+      ? new Date(hoy.getFullYear(), hoy.getMonth(), 25)
+      : new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
 
+  base.setMonth(base.getMonth() + vida);
+  return base;
+}
+
+/* =======================
+   DESDE PRODUCCIÓN
+======================= */
+function calcularDesdeProduccion() {
+  const f = document.getElementById("fechaProduccion").value;
+  if (!f) return;
+
+  const modo = document.getElementById("bloqueProduccion").dataset.modo || "";
+  const [y, m, d] = f.split("-");
+  let fecha = new Date(y, m - 1, d);
+
+  // ÉXITO → +149 días (día de producción cuenta)
+  if (modo === "exito") {
+    fecha.setDate(fecha.getDate() + 149);
+    document.getElementById("vencimiento").innerText = formatearFecha(fecha);
+    return;
+  }
+
+  // PRODUCCIÓN NORMAL → meses
+  let meses = document.getElementById("vidaSeleccionada")?.value;
+  if (!meses) meses = document.getElementById("vida").innerText;
+
+  fecha.setMonth(fecha.getMonth() + parseInt(meses));
   document.getElementById("vencimiento").innerText = formatearFecha(fecha);
 }
 
 /* =======================
-   CLIENTES NORMALES
+   FORMATO FECHA
 ======================= */
-function calcularVencimientoNormal(prod) {
-  const vida = parseInt(prod["Vida Útil"]);
-  const unidad = prod["UNM"].toLowerCase();
-  const hoy = new Date();
-  let fecha;
-
-  if (unidad.includes("mes")) {
-    // regla del último 25
-    if (hoy.getDate() >= 25) {
-      fecha = new Date(hoy.getFullYear(), hoy.getMonth(), 25);
-    } else {
-      fecha = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
-    }
-    fecha.setMonth(fecha.getMonth() + vida);
-  } else if (unidad.includes("día")) {
-    fecha = new Date(hoy);
-    fecha.setDate(fecha.getDate() + vida);
-  }
-
-  return fecha;
-}
-
-/* =======================
-   FORMATO DD/MM/AAAA
-======================= */
-function formatearFecha(fecha) {
-  const dd = String(fecha.getDate()).padStart(2, "0");
-  const mm = String(fecha.getMonth() + 1).padStart(2, "0");
-  const yyyy = fecha.getFullYear();
-  return `${dd}/${mm}/${yyyy}`;
+function formatearFecha(f) {
+  return `${String(f.getDate()).padStart(2, "0")}/${String(
+    f.getMonth() + 1
+  ).padStart(2, "0")}/${f.getFullYear()}`;
 }
 
 
