@@ -78,36 +78,46 @@ function buscar() {
   document.getElementById("embalaje").innerText = prod["Embalaje"];
   document.getElementById("vencimiento").innerText = "";
 
-  document.getElementById("bloqueProduccion").style.display = "none";
-  document.getElementById("bloqueVidaVariable").style.display = "none";
+  const bloqueProd = document.getElementById("bloqueProduccion");
+  const bloqueVidaVar = document.getElementById("bloqueVidaVariable");
+
+  // 🔥 LIMPIEZA CLAVE
+  bloqueProd.style.display = "none";
+  bloqueVidaVar.style.display = "none";
+  delete bloqueProd.dataset.modo;
 
   const cliente = prod["Cliente"].toLowerCase();
   const inicio = prod["Inicio Vida Útil"].toLowerCase();
 
-  // CASO ÉXITO (149 días)
+  /* =======================
+     CASO ÉXITO
+  ======================= */
   if (cliente.includes("exito") || cliente.includes("éxito")) {
-    document.getElementById("bloqueProduccion").style.display = "block";
-    document.getElementById("bloqueProduccion").dataset.modo = "exito";
+    bloqueProd.style.display = "block";
+    bloqueProd.dataset.modo = "exito";
     return;
   }
 
-  // CASO FECHA DE PRODUCCIÓN (MESES)
+  /* =======================
+     CASO FECHA DE PRODUCCIÓN (MESES)
+  ======================= */
   if (inicio.includes("producción")) {
-    document.getElementById("bloqueProduccion").style.display = "block";
+    bloqueProd.style.display = "block";
 
     if (prod["Vida Útil"].includes("12") && prod["Vida Útil"].includes("18")) {
-      document.getElementById("bloqueVidaVariable").style.display = "block";
+      bloqueVidaVar.style.display = "block";
     }
     return;
   }
 
-  // CASO ÚLTIMO 25
+  /* =======================
+     CASO ÚLTIMO 25
+  ======================= */
   if (inicio.includes("25")) {
     const fecha = calcularUltimo25(prod);
     document.getElementById("vencimiento").innerText = formatearFecha(fecha);
   }
 }
-
 
 /* =======================
    ÚLTIMO 25
@@ -159,6 +169,7 @@ function formatearFecha(f) {
     f.getMonth() + 1
   ).padStart(2, "0")}/${f.getFullYear()}`;
 }
+
 
 
 
