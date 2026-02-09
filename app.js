@@ -160,6 +160,32 @@ function calcularDesdeProduccion() {
   fecha.setMonth(fecha.getMonth() + parseInt(meses));
   document.getElementById("vencimiento").innerText = formatearFecha(fecha);
 }
+function nuevaBusqueda() {
+  // Selects
+  document.getElementById("clienteFiltro").value = "";
+  document.getElementById("referencia").innerHTML =
+    '<option value="">Seleccione una referencia</option>';
+
+  // Resultados
+  document.getElementById("cliente").innerText = "";
+  document.getElementById("vida").innerText = "";
+  document.getElementById("unidad").innerText = "";
+  document.getElementById("inicio").innerText = "";
+  document.getElementById("embalaje").innerText = "";
+  document.getElementById("vencimiento").innerText = "";
+
+  // Fecha producción
+  const bloqueProd = document.getElementById("bloqueProduccion");
+  bloqueProd.style.display = "none";
+  delete bloqueProd.dataset.modo;
+  document.getElementById("fechaProduccion").value = "";
+
+  // Vida variable
+  const bloqueVidaVar = document.getElementById("bloqueVidaVariable");
+  bloqueVidaVar.style.display = "none";
+  const selVida = document.getElementById("vidaSeleccionada");
+  if (selVida) selVida.value = "";
+}
 
 /* =======================
    FORMATO FECHA
@@ -169,6 +195,7 @@ function formatearFecha(f) {
     f.getMonth() + 1
   ).padStart(2, "0")}/${f.getFullYear()}`;
 }
+
 
 
 
