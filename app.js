@@ -170,32 +170,21 @@ function formatearFecha(f) {
   ).padStart(2, "0")}/${f.getFullYear()}`;
 }
 function nuevaBusqueda() {
-  // Select cliente
   document.getElementById("clienteFiltro").value = "";
+  document.getElementById("referencia").innerHTML = "";
 
-  // Select referencia
-  document.getElementById("referencia").innerHTML =
-    '<option value="">Seleccione una referencia</option>';
-
-  // Limpiar resultados
-  document.getElementById("cliente").innerText = "";
-  document.getElementById("vida").innerText = "";
-  document.getElementById("unidad").innerText = "";
-  document.getElementById("inicio").innerText = "";
-  document.getElementById("embalaje").innerText = "";
-  document.getElementById("vencimiento").innerText = "";
-
-  // Bloque fecha producción
-  const bloqueProd = document.getElementById("bloqueProduccion");
-  bloqueProd.style.display = "none";
-  delete bloqueProd.dataset.modo;
   document.getElementById("fechaProduccion").value = "";
+  document.getElementById("vidaSeleccionada").value = "";
 
-  // Bloque vida variable
-  const bloqueVidaVar = document.getElementById("bloqueVidaVariable");
-  bloqueVidaVar.style.display = "none";
-  const vidaSel = document.getElementById("vidaSeleccionada");
-  if (vidaSel) vidaSel.value = "";
+  document.getElementById("bloqueProduccion").style.display = "none";
+  document.getElementById("bloqueVidaVariable").style.display = "none";
+
+  document.getElementById("cliente").textContent = "";
+  document.getElementById("vida").textContent = "";
+  document.getElementById("unidad").textContent = "";
+  document.getElementById("inicio").textContent = "";
+  document.getElementById("embalaje").textContent = "";
+  document.getElementById("vencimiento").textContent = "";
 }
 
 
