@@ -13,21 +13,14 @@
 <p><strong>Fecha de hoy:</strong> <span id="fechaHoy"></span></p>
 
 <label>Cliente</label>
-<select id="clienteFiltro" onchange="filtrarReferencias()">
-  <option value="">Seleccione un cliente</option>
-</select>
+<select id="clienteFiltro" onchange="filtrarReferencias()"></select>
 
-<label>Referencia del producto</label>
-<select id="referencia">
-  <option value="">Seleccione una referencia</option>
-</select>
+<label>Referencia</label>
+<select id="referencia"></select>
 
 <button onclick="buscar()">Buscar</button>
 
-<div id="bloqueProduccion" style="display:none;">
-  <label>Fecha de producción (solo Éxito)</label>
-  <input type="date" id="fechaProduccion" onchange="calcularVencimientoExito()">
-</div>
+<hr>
 
 <div class="resultado">
   <p><strong>Cliente:</strong> <span id="cliente"></span></p>
@@ -35,10 +28,23 @@
   <p><strong>Unidad:</strong> <span id="unidad"></span></p>
   <p><strong>Inicio vida útil:</strong> <span id="inicio"></span></p>
   <p><strong>Embalaje:</strong> <span id="embalaje"></span></p>
-  <p>
-    <strong>Fecha de vencimiento (DD/MM/AAAA):</strong>
-    <span id="vencimiento"></span>
-  </p>
+  <p><strong>Fecha de vencimiento (DD/MM/AAAA):</strong> <span id="vencimiento"></span></p>
+</div>
+
+<!-- FECHA DE PRODUCCIÓN -->
+<div id="bloqueProduccion" style="display:none;">
+  <label>Fecha de producción</label>
+  <input type="date" id="fechaProduccion" onchange="calcularDesdeProduccion()">
+</div>
+
+<!-- VIDA ÚTIL VARIABLE -->
+<div id="bloqueVidaVariable" style="display:none;">
+  <label>Vida útil (meses)</label>
+  <select id="vidaSeleccionada" onchange="calcularDesdeProduccion()">
+    <option value="">Seleccione</option>
+    <option value="12">12 meses</option>
+    <option value="18">18 meses</option>
+  </select>
 </div>
 
 <script src="app.js"></script>
