@@ -13,14 +13,19 @@
 <p><strong>Fecha de hoy:</strong> <span id="fechaHoy"></span></p>
 
 <label>Cliente</label>
-<select id="clienteFiltro" onchange="filtrarReferencias()"></select>
+<select id="clienteFiltro" onchange="filtrarReferencias()">
+  <option value="">Seleccione un cliente</option>
+</select>
 
 <label>Referencia</label>
-<select id="referencia"></select>
+<select id="referencia">
+  <option value="">Seleccione una referencia</option>
+</select>
 
-<button onclick="buscar()">Buscar</button>
-<button onclick="nuevaBusqueda()" class="secundario">Nueva búsqueda</button>
-
+<button type="button" onclick="buscar()">Buscar</button>
+<button type="button" onclick="nuevaBusqueda()" class="secundario">
+  Nueva búsqueda
+</button>
 
 <hr>
 
