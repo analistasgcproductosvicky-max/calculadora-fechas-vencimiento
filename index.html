@@ -29,22 +29,17 @@
 
 <hr>
 
-<div class="resultado">
-  <p><strong>Cliente:</strong> <span id="cliente"></span></p>
-  <p><strong>Vida útil:</strong> <span id="vida"></span></p>
-  <p><strong>Unidad:</strong> <span id="unidad"></span></p>
-  <p><strong>Inicio vida útil:</strong> <span id="inicio"></span></p>
-  <p><strong>Embalaje:</strong> <span id="embalaje"></span></p>
-  <p><strong>Fecha de vencimiento (DD/MM/AAAA):</strong> <span id="vencimiento"></span></p>
-</div>
-
-<!-- FECHA DE PRODUCCIÓN -->
+<!-- =========================
+     BLOQUE PRODUCCIÓN
+========================= -->
 <div id="bloqueProduccion" style="display:none;">
   <label>Fecha de producción</label>
   <input type="date" id="fechaProduccion" onchange="calcularDesdeProduccion()">
 </div>
 
-<!-- VIDA ÚTIL VARIABLE -->
+<!-- =========================
+     VIDA ÚTIL VARIABLE
+========================= -->
 <div id="bloqueVidaVariable" style="display:none;">
   <label>Vida útil (meses)</label>
   <select id="vidaSeleccionada" onchange="calcularDesdeProduccion()">
@@ -54,7 +49,20 @@
   </select>
 </div>
 
+<!-- =========================
+     RESULTADO
+========================= -->
+<div class="resultado">
+  <p><strong>Cliente:</strong> <span id="cliente"></span></p>
+  <p><strong>Vida útil:</strong> <span id="vida"></span></p>
+  <p><strong>Unidad:</strong> <span id="unidad"></span></p>
+  <p><strong>Inicio vida útil:</strong> <span id="inicio"></span></p>
+  <p><strong>Embalaje:</strong> <span id="embalaje"></span></p>
+  <p><strong>Fecha de vencimiento (DD/MM/AAAA):</strong> <span id="vencimiento"></span></p>
+</div>
+
 <script src="app.js"></script>
+
 </body>
 </html>
 
