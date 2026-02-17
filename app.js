@@ -1,5 +1,7 @@
 let productos = [];
 
+
+
 /* =======================
    CARGA CSV
 ======================= */
@@ -236,6 +238,7 @@ function nuevaBusqueda() {
   document.getElementById("embalaje").textContent = "";
   document.getElementById("vencimiento").textContent = "";
 }
+
 
 
 
