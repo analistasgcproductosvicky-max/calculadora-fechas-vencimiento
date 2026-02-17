@@ -91,14 +91,14 @@ function buscar() {
   const cliente = prod.Cliente.toLowerCase();
   const inicio = prod["Inicio Vida Útil"].toLowerCase();
 
-  // ÉXITO → días fijos
+  // CASO ÉXITO → días fijos
   if (cliente.includes("exito") || cliente.includes("éxito")) {
     bloqueProd.style.display = "block";
     bloqueProd.dataset.modo = "exito";
     return;
   }
 
-  // DESDE PRODUCCIÓN → meses reales
+  // CASO PRODUCCIÓN → meses reales
   if (inicio.includes("producción")) {
     bloqueProd.style.display = "block";
 
@@ -111,16 +111,24 @@ function buscar() {
     return;
   }
 
-  // ÚLTIMO 25
+  // CASO ÚLTIMO 25
   if (inicio.includes("25")) {
     const fecha = calcularUltimo25(prod);
+    document.getElementById("vencimiento").innerText =
+      formatearFecha(fecha);
+    return;
+  }
+
+  // CASO ÚLTIMO LUNES
+  if (inicio.includes("lunes")) {
+    const fecha = calcularUltimoLunes(prod);
     document.getElementById("vencimiento").innerText =
       formatearFecha(fecha);
   }
 }
 
 /* =======================
-   ÚLTIMO 25
+   REGLA ÚLTIMO 25
 ======================= */
 function calcularUltimo25(prod) {
   const meses = extraerMeses(prod["Vida Útil"]);
@@ -130,6 +138,23 @@ function calcularUltimo25(prod) {
     hoy.getDate() >= 25
       ? new Date(hoy.getFullYear(), hoy.getMonth(), 25)
       : new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
+
+  base.setMonth(base.getMonth() + meses);
+  return base;
+}
+
+/* =======================
+   REGLA ÚLTIMO LUNES
+======================= */
+function calcularUltimoLunes(prod) {
+  const meses = extraerMeses(prod["Vida Útil"]);
+  const hoy = new Date();
+
+  const diaSemana = hoy.getDay(); // 0=domingo, 1=lunes
+  const diferencia = diaSemana === 1 ? 0 : (diaSemana + 6) % 7;
+
+  let base = new Date(hoy);
+  base.setDate(hoy.getDate() - diferencia);
 
   base.setMonth(base.getMonth() + meses);
   return base;
@@ -148,7 +173,7 @@ function calcularDesdeProduccion() {
   const [y, m, d] = f.split("-");
   let fecha = new Date(y, m - 1, d);
 
-  // ÉXITO → días fijos (incluye día de producción)
+  // ÉXITO → +149 días (incluye día de producción)
   if (modo === "exito") {
     fecha.setDate(fecha.getDate() + 149);
     document.getElementById("vencimiento").innerText =
@@ -156,7 +181,6 @@ function calcularDesdeProduccion() {
     return;
   }
 
-  // MESES REALES
   let meses =
     document.getElementById("vidaSeleccionada")?.value ||
     extraerMeses(document.getElementById("vida").innerText);
@@ -170,7 +194,12 @@ function calcularDesdeProduccion() {
    UTILIDADES
 ======================= */
 function extraerMeses(texto) {
-  return parseInt(texto.match(/\d+/)[0]);
+  const numero = texto.match(/\d+/);
+  if (!numero) {
+    alert("Formato inválido en Vida Útil: " + texto);
+    return 0;
+  }
+  return parseInt(numero[0]);
 }
 
 function formatearFecha(f) {
@@ -207,8 +236,6 @@ function nuevaBusqueda() {
   document.getElementById("embalaje").textContent = "";
   document.getElementById("vencimiento").textContent = "";
 }
-
-
 
 
 
