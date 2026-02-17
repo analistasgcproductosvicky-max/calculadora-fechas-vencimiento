@@ -120,20 +120,20 @@ Vicky;EXTRUCITO EXPRESS CARAMELO 10g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto
 Vicky;EXTRUCITO EXPRESS NATURAL 9g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto X 20 display X 12 unidades por display 
 Vicky;EXTRUCITO EXPRESS LIMÓN 9g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto X 20 display X 12 unidades por display 
 Vicky;EXTRUCITO EXPRESS QUESO 9g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto X 20 display X 12 unidades por display 
-Vicky;EXTRUCITO EXPRESS (NAT,CAR,QUES);6;Mes;último 25;6Mesúltimo 25;Caja display X 8 display X 12 unidades por display 
-Vicky;EXTRUCITO EXPRESS (NAT,CAR,QUES);6;Mes;último 25;6Mesúltimo 25;Caja negra X 12 display X 12 unidades por display 
+Vicky;EXTRUCITO EXPRESS (NAT_CAR_QUES);6;Mes;último 25;6Mesúltimo 25;Caja display X 8 display X 12 unidades por display 
+Vicky;EXTRUCITO EXPRESS (NAT_CAR_QUES);6;Mes;último 25;6Mesúltimo 25;Caja negra X 12 display X 12 unidades por display 
 Vicky;EXTRUCITO FAMILIAR CARAMELO 38g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar X 36 unidades
 Vicky;EXTRUCITO FAMILIAR LIMÓN 38g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar X 36 unidades
 Vicky;EXTRUCITO FAMILIAR NATURAL 38g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar X 36 unidades
 Vicky;EXTRUCITO FAMILIAR PICANTE 38g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar X 36 unidades
 Vicky;EXTRUCITO FAMILIAR QUESO 38g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar X 36 unidades
-Vicky;EXTRUCITO FAMILIAR (QUE,PICA,NAT,CARM,LIM) 38g;6;Mes;último 25;6Mesúltimo 25;Caja display X 30 unidades
-Vicky;EXTRUCITO FAMILIAR (QUE,PICA,NAT,CARM,LIM) 38g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 54 unidades
+Vicky;EXTRUCITO FAMILIAR (QUE_PICA_NAT_CARM_LIM) 38g;6;Mes;último 25;6Mesúltimo 25;Caja display X 30 unidades
+Vicky;EXTRUCITO FAMILIAR (QUE_PICA_NAT_CARM_LIM) 38g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 54 unidades
 Vicky;EXTRUCITO SUPER NATURAL 60g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar  X 24 unidades
 Vicky;EXTRUCITO SUPER PICANTE 60g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar  X 24 unidades
 Vicky;EXTRUCITO SUPER QUESO 60g;6;Mes;último 25;6Mesúltimo 25;Bolsa bulto familiar  X 24 unidades
-Vicky;EXTRUCITO SUPER (QUE,PICA,NAT) 60g;6;Mes;último 25;6Mesúltimo 25;Caja display X 20 unidades
-Vicky;EXTRUCITO SUPER (QUE,PICA,NAT) 60g;6;Mes;último 25;6Mesúltimo 25;Caja negra x 36 unidades
+Vicky;EXTRUCITO SUPER (QUE_PICA_NAT) 60g;6;Mes;último 25;6Mesúltimo 25;Caja display X 20 unidades
+Vicky;EXTRUCITO SUPER (QUE_PICA_NAT) 60g;6;Mes;último 25;6Mesúltimo 25;Caja negra x 36 unidades
 Vicky;PAN DE YUQUITA 80g;4;Mes;último lunes;4Mesúltimo lunes;Caja display X 20 unidades
 Vicky;POPMITAS CARAMELO 20g;5;Mes;último lunes;5Mesúltimo lunes;Caja azul X 12 display X 12 unidades por display 
 Vicky;POPMITAS QUESO 18g;5;Mes;último lunes;5Mesúltimo lunes;Caja negra X 11 display X 12 unidades por display 
@@ -143,7 +143,7 @@ Vicky;ROSQUILLA FAMILIAR PAL´ORNO CON QUINOA Y CHIA 65g;5;Mes;último lunes;5Me
 Vicky;ROSQUILLA FAMILIAR PAL´ORNO 65g;5;Mes;último lunes;5Mesúltimo lunes;Caja display X 30 unidades
 Vicky;BESITO FAMILIAR 30g;5;Mes;último lunes;5Mesúltimo lunes;Caja display X 8 display X 6 unidades por display 
 Vicky;BESITO FAMILIAR 70g;5;Mes;último lunes;5Mesúltimo lunes;Caja display X 30 unidades
-Vicky;LONCHERA LIFENESS 99g;5;Mes;último lunes;5Mesúltimo lunes;Caja display X 10 display X 3und de rosquilla, 3 und deditos 
+Vicky;LONCHERA LIFENESS 99g;5;Mes;último lunes;5Mesúltimo lunes;Caja display X 10 display X 3und de rosquilla_ 3 und deditos 
 Vicky;PAN DE ARROZ;6;Mes;último 25;6Mesúltimo 25;Caja trocillo X 25 unidades 
 Mercado Colsubsidio;PAPA NATURAL 20g - Colsubsidio;6;Mes;último 25;6Mesúltimo 25;Caja azul X 12 display X 12 unidades por display 
 Mercado Colsubsidio;PAPA POLLO 20g - Colsubsidio;6;Mes;último 25;6Mesúltimo 25;Caja azul X 12 display X 12 unidades por display 
@@ -198,7 +198,7 @@ D1;MIXTO KYTHOS FAMILIAR NATURAL 150g;6;Mes;último 25;6Mesúltimo 25;Caja Kytho
 D1;LONCHIEXTRUCITO EXPRESS X 12 UNDX 156 GRAMOS ;6;Mes;último 25;6Mesúltimo 25;CAJA NEGRA X 12 DISPLAY X 12 UNIDADES (6 CARAMELO-6 NATURAL)
 D1;MIXTO KYTHOS FAMILIAR BBQ 160g;6;Mes;último 25;6Mesúltimo 25;Caja Kythos Mixto X 12 unidades
 D1;MIXTO KYTHOS FAMILIAR NATURAL 160g;6;Mes;último 25;6Mesúltimo 25;Caja Kythos Mixto X 12 unidades
-D1;MIXTO MEGA KYTHOS SURTIDO NATURAL/BBQ 350g;6;Mes;último 25;6Mesúltimo 25;Caja Kythos Mega X 5 und natural, 5 und BBQ  
+D1;MIXTO MEGA KYTHOS SURTIDO NATURAL/BBQ 350g;6;Mes;último 25;6Mesúltimo 25;Caja Kythos Mega X 5 und natural_ 5 und BBQ  
 D1;PAPA FOSFORITO KYTHOS 200g;4;Mes;último lunes;4Mesúltimo lunes;Caja Kythos Fosforito X 24 unidades
 D1;PAPA KYTHOS FAMILIAR BBQ 115g;6;Mes;último 25;6Mesúltimo 25;Caja Kythos X 18 unidades
 D1;PAPA KYTHOS FAMILIAR LIMÓN 115g;6;Mes;último 25;6Mesúltimo 25;Caja Kythos X 18 unidades
@@ -256,7 +256,7 @@ Miniso;PAPAS CHIPS SABOR MAYONESA 40g;6;Mes;último 25;6Mesúltimo 25;Caja displ
 Tosh;ROSQUILLAS TOSH FINAS HIERBAS-CHÍA 22 g;5;Mes;último lunes;5Mesúltimo lunes;Caja espiral X 12 display X 8 unidades por display
 Tosh;ROSQUILLAS TOSH TOMATE-QUINOA 22 g;5;Mes;último lunes;5Mesúltimo lunes;Caja espiral X 12 display X 8 unidades por display
 Tosh;ROSQUILLA TOSH QUESO PARM.-SEM GIRASOL 22 g;5;Mes;último lunes;5Mesúltimo lunes;Caja propia x 10 displays x 6 unidades por display 
-Nal Chocolates;MINIBESITOS NACIONAL DE CHOCOLATES;4;Mes;Fecha de producción;4MesFecha de producción;Caja exhibidora trocillo X3 display de 1,34Kg. Caja x 4 kg 
+Nal Chocolates;MINIBESITOS NACIONAL DE CHOCOLATES;4;Mes;Fecha de producción;4MesFecha de producción;Caja exhibidora trocillo X3 display de 1_34Kg. Caja x 4 kg 
 Nal Chocolates;ROSQUILLA NACIONAL DE CHOCOLATES;4;Mes;Fecha de producción;4MesFecha de producción;Caja display x 4 display  de 900g  x caja
 Isimo;PAPA MAYONESA CRONCHUDOS 115 g ;6;Mes;último 25;6Mesúltimo 25;Caja propia x 18 unidades
 Isimo;PAPA TOMATE CRONCHUDOS 115 g ;6;Mes;último 25;6Mesúltimo 25;Caja propia x 18 unidades
@@ -276,3 +276,4 @@ Monterojo;EXTRUIDO NATURAL 10g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitr�
 Monterojo;EXTRUIDO CARAMELO  40g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitrógeno)MesFecha de producción;Caja propia x 18 unidades
 Monterojo;EXTRUIDO QUESO 40g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitrógeno)MesFecha de producción;Caja propia x 18 unidades
 Monterojo;EXTRUIDO NATURAL 40g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitrógeno)MesFecha de producción;Caja propia x 18 unidades
+
