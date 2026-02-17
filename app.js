@@ -5,24 +5,22 @@ let productos = [];
 /* =======================
    CARGA CSV
 ======================= */
-fetch("productos.csv")
-  .then(r => r.text())
-  .then(data => {
-    const filas = data.trim().split("\n");
-    const headers = filas[0].split(";");
+.then(data => {
+  const filas = data.trim().split("\n");
+  const headers = filas[0].replace(/^\uFEFF/, '').split(";");
 
-    for (let i = 1; i < filas.length; i++) {
-      const valores = filas[i].split(";");
-      let obj = {};
-      headers.forEach((h, idx) => {
-        obj[h.trim()] = valores[idx]?.trim();
-      });
-      productos.push(obj);
-    }
+  for (let i = 1; i < filas.length; i++) {
+    const valores = filas[i].split(";");
+    let obj = {};
+    headers.forEach((h, idx) => {
+      obj[h.trim()] = valores[idx]?.trim();
+    });
+    productos.push(obj);
+  }
 
-    mostrarFechaHoy();
-    cargarClientes();
-  });
+  mostrarFechaHoy();
+  cargarClientes();
+});
 
 /* =======================
    FECHA HOY
@@ -238,6 +236,7 @@ function nuevaBusqueda() {
   document.getElementById("embalaje").textContent = "";
   document.getElementById("vencimiento").textContent = "";
 }
+
 
 
 
