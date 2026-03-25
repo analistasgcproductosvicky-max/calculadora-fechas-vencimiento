@@ -52,7 +52,6 @@ body {
 .navbar-logo {
   height: 38px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
 }
 .navbar-title {
   color: rgba(255,255,255,.75);
@@ -426,8 +425,12 @@ select:disabled { opacity: .45; cursor: not-allowed; }
   position: relative;
 }
 .autocomplete-wrap input[type="text"] {
+  background: #f7f9fc;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
   background-image: none;
   padding-right: 32px;
+}
 }
 .autocomplete-wrap input[type="text"]:disabled {
   opacity: .45;
