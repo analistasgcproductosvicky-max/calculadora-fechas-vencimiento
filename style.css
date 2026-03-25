@@ -196,7 +196,7 @@ body {
   letter-spacing: .06em;
   margin-bottom: 6px;
 }
-select, input[type="date"] {
+select, input[type="date"], input[type="text"] {
   background: #f7f9fc;
   border: 1.5px solid var(--border);
   border-radius: 8px;
