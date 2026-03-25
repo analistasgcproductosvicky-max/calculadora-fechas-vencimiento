@@ -52,6 +52,7 @@ body {
 .navbar-logo {
   height: 38px;
   object-fit: contain;
+  mix-blend-mode: screen;
 }
 .navbar-title {
   color: rgba(255,255,255,.75);
