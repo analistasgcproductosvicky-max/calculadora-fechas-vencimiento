@@ -418,3 +418,86 @@ select:disabled { opacity: .45; cursor: not-allowed; }
   20%,60% { transform: translateX(-5px); }
   40%,80% { transform: translateX(5px); }
 }
+
+/* =============================================
+   AUTOCOMPLETE
+============================================= */
+.autocomplete-wrap {
+  position: relative;
+}
+.autocomplete-wrap input[type="text"] {
+  background-image: none;
+  padding-right: 32px;
+}
+.autocomplete-wrap input[type="text"]:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* Botón X para limpiar */
+.ac-clear {
+  display: none;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+.ac-clear:hover { color: var(--text); background: var(--border); }
+.autocomplete-wrap.has-value .ac-clear { display: block; }
+
+/* Dropdown */
+.autocomplete-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--blue-mid);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 200;
+}
+.autocomplete-dropdown.open { display: block; }
+
+.ac-item {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.35;
+  transition: background .12s;
+  color: var(--text);
+}
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover, .ac-item.active { background: var(--blue-light); color: var(--blue); }
+
+/* Resaltado del texto coincidente */
+.ac-item mark {
+  background: var(--yellow);
+  color: #3a2800;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.ac-empty {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* Scrollbar del dropdown */
+.autocomplete-dropdown::-webkit-scrollbar { width: 5px; }
+.autocomplete-dropdown::-webkit-scrollbar-track { background: transparent; }
+.autocomplete-dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }

@@ -13,7 +13,7 @@
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="navbar-inner">
-      <img src="AJUSTADA.png" alt="Productos La Victoria" class="navbar-logo">
+      <img src="AJUSTADA.png" alt="La Victoria / Vicky" class="navbar-logo">
       <span class="navbar-title">Consulta de Vida Útil</span>
     </div>
   </nav>
@@ -22,7 +22,7 @@
   <div class="hero">
     <div class="hero-inner">
       <div>
-        <p class="hero-tag">Programa de Trazabilidad</p>
+        <p class="hero-tag">Módulo de Producción</p>
         <h1 class="hero-h1">Consulta de Vida Útil</h1>
         <p class="hero-sub">Calcula la fecha de vencimiento según las reglas de cada cliente.</p>
       </div>
@@ -42,7 +42,7 @@
         <div class="card-icon">🔍</div>
         <div>
           <h2 class="card-title">Buscar producto</h2>
-          <p class="card-sub">Seleccione el cliente y la referencia</p>
+          <p class="card-sub">Seleccione el cliente y escriba la referencia</p>
         </div>
       </div>
 
@@ -53,18 +53,30 @@
             <option value="">Seleccione un cliente…</option>
           </select>
         </div>
+
         <div class="field">
-          <label for="referencia">Referencia / Producto</label>
-          <select id="referencia" disabled>
-            <option value="">Seleccione primero un cliente…</option>
-          </select>
+          <label for="referenciaInput">Referencia / Producto</label>
+          <div class="autocomplete-wrap" id="autocompleteWrap">
+            <input
+              type="text"
+              id="referenciaInput"
+              placeholder="Seleccione primero un cliente…"
+              disabled
+              autocomplete="off"
+              oninput="filtrarOpciones()"
+              onfocus="mostrarDropdown()"
+            >
+            <span class="ac-clear" id="acClear" onclick="limpiarReferencia()" title="Limpiar">✕</span>
+            <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+          </div>
+          <input type="hidden" id="referencia">
         </div>
       </div>
 
       <div id="bloqueProduccion" style="display:none;">
         <div class="field">
           <label for="fechaProduccion">Fecha de producción</label>
-          <input type="date" id="fechaProduccion" onchange="calcularDesdeProduccion()">
+          <input type="date" id="fechaProduccion" >
         </div>
       </div>
 
@@ -132,7 +144,6 @@
     Pasabocas La Victoria · Módulo interno de trazabilidad
   </footer>
 
-  <script src="productos.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

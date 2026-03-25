@@ -1,9 +1,9 @@
 /* =============================================
    CARGA DEL CSV
-   El CSV se sirve desde productos.csv en el
-   mismo repositorio de GitHub Pages.
 ============================================= */
 let productos = [];
+let opcionesCliente = []; // referencias del cliente activo
+let itemActivo = -1;      // índice del item resaltado con teclado
 
 fetch("productos.csv")
   .then(r => {
@@ -15,31 +15,46 @@ fetch("productos.csv")
     mostrarFechaHoy();
     cargarClientes();
   })
-  .catch(err => {
-    console.error("Error cargando CSV:", err);
-    // Fallback: intentar desde productos.js si existe
-    if (typeof PRODUCTOS_DATA !== "undefined") {
-      productos = parsearCSV(PRODUCTOS_DATA);
-      mostrarFechaHoy();
-      cargarClientes();
-    }
-  });
+  .catch(err => console.error("Error cargando CSV:", err));
 
 /* =============================================
-   PARSE CSV
+   PARSE CSV  (soporta coma y punto y coma)
 ============================================= */
 function parsearCSV(raw) {
   const filas = raw.trim().split("\n");
-  const headers = filas[0].replace(/^\uFEFF/, '').split(";");
+  const primeraLinea = filas[0].replace(/^\uFEFF/, '');
+  const separador = primeraLinea.includes(";") ? ";" : ",";
+  const headers = splitCSVLine(primeraLinea, separador);
   const result = [];
   for (let i = 1; i < filas.length; i++) {
-    const valores = filas[i].split(";");
+    if (!filas[i].trim()) continue;
+    const valores = splitCSVLine(filas[i], separador);
     let obj = {};
     headers.forEach((h, idx) => {
       obj[h.trim()] = (valores[idx] || '').trim();
     });
     result.push(obj);
   }
+  return result;
+}
+
+// Parser CSV que respeta campos entre comillas
+function splitCSVLine(line, sep) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === sep && !inQuotes) {
+      result.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
   return result;
 }
 
@@ -57,93 +72,233 @@ function cargarClientes() {
   const sel = document.getElementById("clienteFiltro");
   [...new Set(productos.map(p => p.Cliente))].sort().forEach(c => {
     const o = document.createElement("option");
-    o.value = c;
-    o.textContent = c;
+    o.value = c; o.textContent = c;
     sel.appendChild(o);
   });
 }
 
 /* =============================================
-   REFERENCIAS
+   REFERENCIAS — poblar lista del cliente
 ============================================= */
 function filtrarReferencias() {
   const cliente = document.getElementById("clienteFiltro").value;
-  const ref = document.getElementById("referencia");
+  const input = document.getElementById("referenciaInput");
+  const hidden = document.getElementById("referencia");
 
-  ref.innerHTML = '<option value="">Seleccione una referencia…</option>';
-  ref.disabled = !cliente;
-  if (!cliente) { ocultarResultado(); return; }
-
-  productos
-    .filter(p => p.Cliente === cliente)
-    .forEach(p => {
-      const o = document.createElement("option");
-      o.value = p.Descripción;
-      o.textContent = p.Descripción;
-      ref.appendChild(o);
-    });
-
+  // Reiniciar autocomplete
+  input.value = "";
+  input.disabled = !cliente;
+  input.placeholder = cliente ? "Escriba para buscar…" : "Seleccione primero un cliente…";
+  hidden.value = "";
+  document.getElementById("autocompleteWrap").classList.remove("has-value");
+  cerrarDropdown();
   ocultarResultado();
+
+  if (!cliente) { opcionesCliente = []; return; }
+
+  opcionesCliente = [...new Set(
+    productos.filter(p => p.Cliente === cliente).map(p => p.Descripción.trim())
+  )];
+}
+
+/* =============================================
+   AUTOCOMPLETE — filtrar mientras escribe
+============================================= */
+function filtrarOpciones() {
+  const query = document.getElementById("referenciaInput").value.trim();
+  const hidden = document.getElementById("referencia");
+  const wrap = document.getElementById("autocompleteWrap");
+
+  // Si el texto ya no coincide con la selección guardada, limpiar hidden
+  if (hidden.value && hidden.value !== query) {
+    hidden.value = "";
+  }
+
+  wrap.classList.toggle("has-value", query.length > 0);
+  itemActivo = -1;
+
+  if (!query) {
+    cerrarDropdown();
+    return;
+  }
+
+  const terminos = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const coincidencias = opcionesCliente.filter(op =>
+    terminos.every(t => op.toLowerCase().includes(t))
+  );
+
+  renderDropdown(coincidencias, query);
+}
+
+function mostrarDropdown() {
+  const query = document.getElementById("referenciaInput").value.trim();
+  if (!query && opcionesCliente.length) {
+    renderDropdown(opcionesCliente, "");
+  }
+}
+
+function renderDropdown(lista, query) {
+  const dd = document.getElementById("autocompleteDropdown");
+
+  if (!lista.length) {
+    dd.innerHTML = '<div class="ac-empty">Sin coincidencias</div>';
+    dd.classList.add("open");
+    return;
+  }
+
+  dd.innerHTML = lista.map((op, i) =>
+    `<div class="ac-item" data-val="${escaparAttr(op)}" onmousedown="seleccionarOpcion(this)">${resaltar(op, query)}</div>`
+  ).join("");
+  dd.classList.add("open");
+}
+
+function resaltar(texto, query) {
+  if (!query) return texto;
+  const terminos = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  let result = texto;
+  terminos.forEach(t => {
+    const re = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    result = result.replace(re, '<mark>$1</mark>');
+  });
+  return result;
+}
+
+function escaparAttr(str) {
+  return str.replace(/"/g, '&quot;');
+}
+
+function seleccionarOpcion(el) {
+  const val = el.dataset.val;
+  document.getElementById("referenciaInput").value = val;
+  document.getElementById("referencia").value = val;
+  document.getElementById("autocompleteWrap").classList.add("has-value");
+  cerrarDropdown();
+  itemActivo = -1;
+}
+
+function cerrarDropdown() {
+  const dd = document.getElementById("autocompleteDropdown");
+  dd.classList.remove("open");
+  dd.innerHTML = "";
+}
+
+function limpiarReferencia() {
+  document.getElementById("referenciaInput").value = "";
+  document.getElementById("referencia").value = "";
+  document.getElementById("autocompleteWrap").classList.remove("has-value");
+  cerrarDropdown();
+  ocultarResultado();
+}
+
+// Navegación con teclado (↑ ↓ Enter Escape)
+document.addEventListener("keydown", function(e) {
+  const dd = document.getElementById("autocompleteDropdown");
+  if (!dd.classList.contains("open")) return;
+
+  const items = dd.querySelectorAll(".ac-item");
+  if (!items.length) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    itemActivo = Math.min(itemActivo + 1, items.length - 1);
+    actualizarActivo(items);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    itemActivo = Math.max(itemActivo - 1, 0);
+    actualizarActivo(items);
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    if (itemActivo >= 0) seleccionarOpcion(items[itemActivo]);
+    else if (items.length === 1) seleccionarOpcion(items[0]);
+  } else if (e.key === "Escape") {
+    cerrarDropdown();
+  }
+});
+
+// Cerrar al hacer clic fuera
+document.addEventListener("click", function(e) {
+  if (!document.getElementById("autocompleteWrap").contains(e.target)) {
+    cerrarDropdown();
+  }
+});
+
+function actualizarActivo(items) {
+  items.forEach((el, i) => el.classList.toggle("active", i === itemActivo));
+  if (itemActivo >= 0) items[itemActivo].scrollIntoView({ block: "nearest" });
 }
 
 /* =============================================
    BUSCAR
 ============================================= */
 function buscar() {
-  const refSel = document.getElementById("referencia").value;
-  if (!refSel) {
-    sacudir(document.getElementById("referencia"));
+  const refVal = document.getElementById("referencia").value ||
+                 document.getElementById("referenciaInput").value.trim();
+
+  if (!refVal) {
+    sacudir(document.getElementById("referenciaInput"));
     return;
   }
 
-  const prod = productos.find(p => p.Descripción.trim() === refSel.trim());
-  if (!prod) return;
+  const prod = productos.find(p => p.Descripción.trim() === refVal.trim());
+  if (!prod) {
+    sacudir(document.getElementById("referenciaInput"));
+    return;
+  }
 
-  // Poblar datos básicos
+  // Asegurar que hidden tenga el valor
+  document.getElementById("referencia").value = prod.Descripción.trim();
+
+  // Poblar datos
   document.getElementById("rCliente").textContent  = prod.Cliente;
   document.getElementById("rVida").textContent     = prod["Vida Útil"] + " " + prod.UNM;
   document.getElementById("rUnidad").textContent   = prod.UNM;
   document.getElementById("rInicio").textContent   = prod["Inicio Vida Útil"];
   document.getElementById("rEmbalaje").textContent = prod.Embalaje;
 
-  // Mostrar card resultado
   mostrarCard("cardResultado");
   ocultarVencimiento();
+
+  // Guardar fecha y vida antes de resetear los bloques
+  const fechaGuardada = document.getElementById("fechaProduccion").value;
+  const vidaGuardada  = vidaSeleccionadaVal;
   ocultarBloques();
 
   const cliente = prod.Cliente.toLowerCase();
   const inicio  = prod["Inicio Vida Útil"].toLowerCase();
 
-  // ── ÉXITO → +149 días desde producción ──
   if (cliente.includes("exito") || cliente.includes("éxito")) {
     mostrarBloque("bloqueProduccion", "exito");
+    _restaurarFechaYCalcular(fechaGuardada, null);
     return;
   }
-
-  // ── DESDE PRODUCCIÓN (meses) ──
   if (inicio.includes("producción")) {
     mostrarBloque("bloqueProduccion");
-    // Vida variable 12 o 18
-    if (prod["Vida Útil"].includes("12") && prod["Vida Útil"].includes("18")) {
+    const tieneVidaVar = prod["Vida Útil"].includes("12") && prod["Vida Útil"].includes("18");
+    if (tieneVidaVar) {
       document.getElementById("bloqueVidaVariable").style.display = "block";
     }
+    _restaurarFechaYCalcular(fechaGuardada, tieneVidaVar ? vidaGuardada : null);
     return;
   }
+  if (inicio.includes("25"))    { mostrarVencimiento(calcularUltimo25(prod));   return; }
+  if (inicio.includes("lunes")) { mostrarVencimiento(calcularUltimoLunes(prod)); }
+}
 
-  // ── ÚLTIMO 25 ──
-  if (inicio.includes("25")) {
-    mostrarVencimiento(calcularUltimo25(prod));
-    return;
+// Restaura la fecha (y vida si aplica) y dispara el calculo si hay fecha
+function _restaurarFechaYCalcular(fecha, vida) {
+  if (!fecha) return;
+  document.getElementById("fechaProduccion").value = fecha;
+  if (vida) {
+    vidaSeleccionadaVal = vida;
+    document.querySelectorAll(".vida-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.val === vida);
+    });
   }
-
-  // ── ÚLTIMO LUNES ──
-  if (inicio.includes("lunes")) {
-    mostrarVencimiento(calcularUltimoLunes(prod));
-  }
+  calcularDesdeProduccion();
 }
 
 /* =============================================
-   VIDA VARIABLE — botones toggle
+   VIDA VARIABLE
 ============================================= */
 let vidaSeleccionadaVal = null;
 
@@ -151,7 +306,7 @@ function selVida(btn) {
   document.querySelectorAll(".vida-btn").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
   vidaSeleccionadaVal = btn.dataset.val;
-  calcularDesdeProduccion();
+  // El calculo se dispara al presionar Consultar, no aqui
 }
 
 /* =============================================
@@ -160,30 +315,25 @@ function selVida(btn) {
 function calcularDesdeProduccion() {
   const f = document.getElementById("fechaProduccion").value;
   if (!f) return;
-
   const bloqueProd = document.getElementById("bloqueProduccion");
   const modo = bloqueProd.dataset.modo || "";
   const [y, m, d] = f.split("-");
   let fecha = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
 
-  // Éxito: +149 días (día de producción + 149)
   if (modo === "exito") {
     fecha.setDate(fecha.getDate() + 149);
     mostrarVencimiento(fecha);
     return;
   }
-
-  // Vida variable
   const bloqueVida = document.getElementById("bloqueVidaVariable");
   if (bloqueVida.style.display !== "none") {
-    if (!vidaSeleccionadaVal) return; // esperar selección
+    if (!vidaSeleccionadaVal) return;
     fecha.setMonth(fecha.getMonth() + parseInt(vidaSeleccionadaVal));
   } else {
     const meses = extraerNumero(document.getElementById("rVida").textContent);
     if (!meses) return;
     fecha.setMonth(fecha.getMonth() + meses);
   }
-
   mostrarVencimiento(fecha);
 }
 
@@ -262,9 +412,10 @@ function ocultarResultado() {
 
 function nuevaBusqueda() {
   document.getElementById("clienteFiltro").value = "";
-  const ref = document.getElementById("referencia");
-  ref.innerHTML = '<option value="">Seleccione primero un cliente…</option>';
-  ref.disabled = true;
+  limpiarReferencia();
+  opcionesCliente = [];
+  document.getElementById("referenciaInput").disabled = true;
+  document.getElementById("referenciaInput").placeholder = "Seleccione primero un cliente…";
   ocultarResultado();
 }
 
