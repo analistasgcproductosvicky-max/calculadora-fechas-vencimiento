@@ -1,61 +1,78 @@
+/* =============================================
+   CARGA DEL CSV
+   El CSV se sirve desde productos.csv en el
+   mismo repositorio de GitHub Pages.
+============================================= */
 let productos = [];
 
-/* =======================
-   CARGA CSV
-======================= */
 fetch("productos.csv")
-  .then(r => r.text())
+  .then(r => {
+    if (!r.ok) throw new Error("No se pudo cargar productos.csv");
+    return r.text();
+  })
   .then(data => {
-    const filas = data.trim().split("\n");
-    const headers = filas[0].replace(/^\uFEFF/, '').split(";");
-
-    for (let i = 1; i < filas.length; i++) {
-      const valores = filas[i].split(";");
-      let obj = {};
-      headers.forEach((h, idx) => {
-        obj[h.trim()] = valores[idx]?.trim();
-      });
-      productos.push(obj);
-    }
-
+    productos = parsearCSV(data);
     mostrarFechaHoy();
     cargarClientes();
   })
-  .catch(error => {
-    console.error("Error cargando CSV:", error);
+  .catch(err => {
+    console.error("Error cargando CSV:", err);
+    // Fallback: intentar desde productos.js si existe
+    if (typeof PRODUCTOS_DATA !== "undefined") {
+      productos = parsearCSV(PRODUCTOS_DATA);
+      mostrarFechaHoy();
+      cargarClientes();
+    }
   });
 
-/* =======================
-   FECHA HOY
-======================= */
-function mostrarFechaHoy() {
-  document.getElementById("fechaHoy").innerText = formatearFecha(new Date());
+/* =============================================
+   PARSE CSV
+============================================= */
+function parsearCSV(raw) {
+  const filas = raw.trim().split("\n");
+  const headers = filas[0].replace(/^\uFEFF/, '').split(";");
+  const result = [];
+  for (let i = 1; i < filas.length; i++) {
+    const valores = filas[i].split(";");
+    let obj = {};
+    headers.forEach((h, idx) => {
+      obj[h.trim()] = (valores[idx] || '').trim();
+    });
+    result.push(obj);
+  }
+  return result;
 }
 
-/* =======================
-   CLIENTES
-======================= */
-function cargarClientes() {
-  const select = document.getElementById("clienteFiltro");
-  select.innerHTML = '<option value="">Seleccione un cliente</option>';
+/* =============================================
+   FECHA HOY
+============================================= */
+function mostrarFechaHoy() {
+  document.getElementById("fechaHoy").textContent = formatearFecha(new Date());
+}
 
-  [...new Set(productos.map(p => p.Cliente))].forEach(c => {
+/* =============================================
+   CLIENTES
+============================================= */
+function cargarClientes() {
+  const sel = document.getElementById("clienteFiltro");
+  [...new Set(productos.map(p => p.Cliente))].sort().forEach(c => {
     const o = document.createElement("option");
     o.value = c;
     o.textContent = c;
-    select.appendChild(o);
+    sel.appendChild(o);
   });
 }
 
-/* =======================
+/* =============================================
    REFERENCIAS
-======================= */
+============================================= */
 function filtrarReferencias() {
   const cliente = document.getElementById("clienteFiltro").value;
   const ref = document.getElementById("referencia");
 
-  ref.innerHTML = '<option value="">Seleccione una referencia</option>';
-  if (!cliente) return;
+  ref.innerHTML = '<option value="">Seleccione una referencia…</option>';
+  ref.disabled = !cliente;
+  if (!cliente) { ocultarResultado(); return; }
 
   productos
     .filter(p => p.Cliente === cliente)
@@ -65,189 +82,211 @@ function filtrarReferencias() {
       o.textContent = p.Descripción;
       ref.appendChild(o);
     });
+
+  ocultarResultado();
 }
 
-/* =======================
+/* =============================================
    BUSCAR
-======================= */
+============================================= */
 function buscar() {
   const refSel = document.getElementById("referencia").value;
-  const prod = productos.find(
-    p => p.Descripción.trim() === refSel.trim()
-  );
-  if (!prod) return;
-
-  document.getElementById("cliente").innerText = prod.Cliente;
-  document.getElementById("vida").innerText = prod["Vida Útil"];
-  document.getElementById("unidad").innerText = prod.UNM;
-  document.getElementById("inicio").innerText = prod["Inicio Vida Útil"];
-  document.getElementById("embalaje").innerText = prod.Embalaje;
-  document.getElementById("vencimiento").innerText = "";
-
-  const bloqueProd = document.getElementById("bloqueProduccion");
-  const bloqueVidaVar = document.getElementById("bloqueVidaVariable");
-
-  bloqueProd.style.display = "none";
-  bloqueVidaVar.style.display = "none";
-  delete bloqueProd.dataset.modo;
-
-  const cliente = prod.Cliente.toLowerCase();
-  const inicio = prod["Inicio Vida Útil"].toLowerCase();
-
-  // CASO ÉXITO → días fijos
-  if (cliente.includes("exito") || cliente.includes("éxito")) {
-    bloqueProd.style.display = "block";
-    bloqueProd.dataset.modo = "exito";
+  if (!refSel) {
+    sacudir(document.getElementById("referencia"));
     return;
   }
 
-  // CASO PRODUCCIÓN → meses reales
-  if (inicio.includes("producción")) {
-    bloqueProd.style.display = "block";
+  const prod = productos.find(p => p.Descripción.trim() === refSel.trim());
+  if (!prod) return;
 
-    if (
-      prod["Vida Útil"].includes("12") &&
-      prod["Vida Útil"].includes("18")
-    ) {
-      bloqueVidaVar.style.display = "block";
+  // Poblar datos básicos
+  document.getElementById("rCliente").textContent  = prod.Cliente;
+  document.getElementById("rVida").textContent     = prod["Vida Útil"] + " " + prod.UNM;
+  document.getElementById("rUnidad").textContent   = prod.UNM;
+  document.getElementById("rInicio").textContent   = prod["Inicio Vida Útil"];
+  document.getElementById("rEmbalaje").textContent = prod.Embalaje;
+
+  // Mostrar card resultado
+  mostrarCard("cardResultado");
+  ocultarVencimiento();
+  ocultarBloques();
+
+  const cliente = prod.Cliente.toLowerCase();
+  const inicio  = prod["Inicio Vida Útil"].toLowerCase();
+
+  // ── ÉXITO → +149 días desde producción ──
+  if (cliente.includes("exito") || cliente.includes("éxito")) {
+    mostrarBloque("bloqueProduccion", "exito");
+    return;
+  }
+
+  // ── DESDE PRODUCCIÓN (meses) ──
+  if (inicio.includes("producción")) {
+    mostrarBloque("bloqueProduccion");
+    // Vida variable 12 o 18
+    if (prod["Vida Útil"].includes("12") && prod["Vida Útil"].includes("18")) {
+      document.getElementById("bloqueVidaVariable").style.display = "block";
     }
     return;
   }
 
-  // CASO ÚLTIMO 25
+  // ── ÚLTIMO 25 ──
   if (inicio.includes("25")) {
-    const fecha = calcularUltimo25(prod);
-    document.getElementById("vencimiento").innerText =
-      formatearFecha(fecha);
+    mostrarVencimiento(calcularUltimo25(prod));
     return;
   }
 
-  // CASO ÚLTIMO LUNES
+  // ── ÚLTIMO LUNES ──
   if (inicio.includes("lunes")) {
-    const fecha = calcularUltimoLunes(prod);
-    document.getElementById("vencimiento").innerText =
-      formatearFecha(fecha);
+    mostrarVencimiento(calcularUltimoLunes(prod));
   }
 }
 
-/* =======================
-   REGLA ÚLTIMO 25
-======================= */
-function calcularUltimo25(prod) {
-  const meses = extraerMeses(prod["Vida Útil"]);
-  const hoy = new Date();
+/* =============================================
+   VIDA VARIABLE — botones toggle
+============================================= */
+let vidaSeleccionadaVal = null;
 
-  const base =
-    hoy.getDate() >= 25
-      ? new Date(hoy.getFullYear(), hoy.getMonth(), 25)
-      : new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
-
-  base.setMonth(base.getMonth() + meses);
-  return base;
+function selVida(btn) {
+  document.querySelectorAll(".vida-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  vidaSeleccionadaVal = btn.dataset.val;
+  calcularDesdeProduccion();
 }
 
-/* =======================
-   REGLA ÚLTIMO LUNES
-======================= */
-function calcularUltimoLunes(prod) {
-  const meses = extraerMeses(prod["Vida Útil"]);
-  const hoy = new Date();
-
-  const diaSemana = hoy.getDay(); // 0=domingo, 1=lunes
-  const diferencia = diaSemana === 1 ? 0 : (diaSemana + 6) % 7;
-
-  let base = new Date(hoy);
-  base.setDate(hoy.getDate() - diferencia);
-
-  base.setMonth(base.getMonth() + meses);
-  return base;
-}
-
-/* =======================
+/* =============================================
    DESDE PRODUCCIÓN
-======================= */
+============================================= */
 function calcularDesdeProduccion() {
   const f = document.getElementById("fechaProduccion").value;
   if (!f) return;
 
   const bloqueProd = document.getElementById("bloqueProduccion");
   const modo = bloqueProd.dataset.modo || "";
-
   const [y, m, d] = f.split("-");
-  let fecha = new Date(y, m - 1, d);
+  let fecha = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
 
-  // ÉXITO → +149 días (incluye día de producción)
+  // Éxito: +149 días (día de producción + 149)
   if (modo === "exito") {
     fecha.setDate(fecha.getDate() + 149);
-    document.getElementById("vencimiento").innerText =
-      formatearFecha(fecha);
+    mostrarVencimiento(fecha);
     return;
   }
 
-  let meses =
-    document.getElementById("vidaSeleccionada")?.value ||
-    extraerMeses(document.getElementById("vida").innerText);
+  // Vida variable
+  const bloqueVida = document.getElementById("bloqueVidaVariable");
+  if (bloqueVida.style.display !== "none") {
+    if (!vidaSeleccionadaVal) return; // esperar selección
+    fecha.setMonth(fecha.getMonth() + parseInt(vidaSeleccionadaVal));
+  } else {
+    const meses = extraerNumero(document.getElementById("rVida").textContent);
+    if (!meses) return;
+    fecha.setMonth(fecha.getMonth() + meses);
+  }
 
-  fecha.setMonth(fecha.getMonth() + parseInt(meses));
-  document.getElementById("vencimiento").innerText =
-    formatearFecha(fecha);
+  mostrarVencimiento(fecha);
 }
 
-/* =======================
-   UTILIDADES
-======================= */
-function extraerMeses(texto) {
-  const numero = texto.match(/\d+/);
-  if (!numero) {
-    alert("Formato inválido en Vida Útil: " + texto);
-    return 0;
-  }
-  return parseInt(numero[0]);
+/* =============================================
+   REGLAS DE CÁLCULO
+============================================= */
+function calcularUltimo25(prod) {
+  const meses = extraerNumero(prod["Vida Útil"]);
+  const hoy = new Date();
+  const base = hoy.getDate() >= 25
+    ? new Date(hoy.getFullYear(), hoy.getMonth(), 25)
+    : new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
+  base.setMonth(base.getMonth() + meses);
+  return base;
+}
+
+function calcularUltimoLunes(prod) {
+  const meses = extraerNumero(prod["Vida Útil"]);
+  const hoy = new Date();
+  const diasAtras = hoy.getDay() === 1 ? 0 : (hoy.getDay() + 6) % 7;
+  let base = new Date(hoy);
+  base.setDate(hoy.getDate() - diasAtras);
+  base.setMonth(base.getMonth() + meses);
+  return base;
+}
+
+/* =============================================
+   UTILIDADES UI
+============================================= */
+function mostrarCard(id) {
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  el.style.animation = "none";
+  void el.offsetWidth;
+  el.style.animation = "fadeUp .35s ease both";
+}
+
+function mostrarBloque(id, modo) {
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  if (modo) el.dataset.modo = modo;
+  else delete el.dataset.modo;
+  document.getElementById("fechaProduccion").value = "";
+}
+
+function mostrarVencimiento(fecha) {
+  document.getElementById("rVencimiento").textContent = formatearFecha(fecha);
+  const blk = document.getElementById("vencBlock");
+  blk.style.display = "flex";
+  blk.style.animation = "none";
+  void blk.offsetWidth;
+  blk.style.animation = "fadeUp .3s ease both";
+}
+
+function ocultarVencimiento() {
+  document.getElementById("vencBlock").style.display = "none";
+  document.getElementById("rVencimiento").textContent = "—";
+}
+
+function ocultarBloques() {
+  ["bloqueProduccion", "bloqueVidaVariable"].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.display = "none";
+    delete el.dataset.modo;
+  });
+  document.getElementById("fechaProduccion").value = "";
+  vidaSeleccionadaVal = null;
+  document.querySelectorAll(".vida-btn").forEach(b => b.classList.remove("active"));
+}
+
+function ocultarResultado() {
+  document.getElementById("cardResultado").style.display = "none";
+  ocultarBloques();
+  ocultarVencimiento();
+}
+
+function nuevaBusqueda() {
+  document.getElementById("clienteFiltro").value = "";
+  const ref = document.getElementById("referencia");
+  ref.innerHTML = '<option value="">Seleccione primero un cliente…</option>';
+  ref.disabled = true;
+  ocultarResultado();
+}
+
+/* =============================================
+   UTILIDADES DATOS
+============================================= */
+function extraerNumero(texto) {
+  const n = String(texto).match(/\d+/);
+  return n ? parseInt(n[0]) : 0;
 }
 
 function formatearFecha(f) {
-  return `${String(f.getDate()).padStart(2, "0")}/${String(
-    f.getMonth() + 1
-  ).padStart(2, "0")}/${f.getFullYear()}`;
+  return (
+    String(f.getDate()).padStart(2, "0") + "/" +
+    String(f.getMonth() + 1).padStart(2, "0") + "/" +
+    f.getFullYear()
+  );
 }
 
-/* =======================
-   NUEVA BÚSQUEDA
-======================= */
-function nuevaBusqueda() {
-  const cliente = document.getElementById("clienteFiltro");
-  const ref = document.getElementById("referencia");
-
-  cliente.value = "";
-  ref.innerHTML = '<option value="">Seleccione una referencia</option>';
-  ref.value = "";
-
-  document.getElementById("fechaProduccion").value = "";
-  document.getElementById("vidaSeleccionada").value = "";
-
-  const bloqueProd = document.getElementById("bloqueProduccion");
-  const bloqueVidaVar = document.getElementById("bloqueVidaVariable");
-
-  bloqueProd.style.display = "none";
-  bloqueVidaVar.style.display = "none";
-  delete bloqueProd.dataset.modo;
-
-  document.getElementById("cliente").textContent = "";
-  document.getElementById("vida").textContent = "";
-  document.getElementById("unidad").textContent = "";
-  document.getElementById("inicio").textContent = "";
-  document.getElementById("embalaje").textContent = "";
-  document.getElementById("vencimiento").textContent = "";
+function sacudir(el) {
+  el.style.animation = "none";
+  void el.offsetWidth;
+  el.style.animation = "sacudida .4s ease";
+  setTimeout(() => (el.style.animation = ""), 420);
 }
-
-
-
-
-
-
-
-
-
-
-
-

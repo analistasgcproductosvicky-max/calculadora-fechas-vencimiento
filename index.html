@@ -2,68 +2,137 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Consulta de Vida Útil</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Vida Útil — La Victoria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Consulta de Vida Útil</h2>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <img src="AJUSTADA.png" alt="La Victoria / Vicky" class="navbar-logo">
+      <span class="navbar-title">Consulta de Vida Útil</span>
+    </div>
+  </nav>
 
-<p><strong>Fecha de hoy:</strong> <span id="fechaHoy"></span></p>
+  <!-- HERO BANNER -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-tag">Módulo de Producción</p>
+        <h1 class="hero-h1">Consulta de Vida Útil</h1>
+        <p class="hero-sub">Calcula la fecha de vencimiento según las reglas de cada cliente.</p>
+      </div>
+      <div class="hero-date">
+        <div class="dot-live"></div>
+        <span id="fechaHoy">—</span>
+      </div>
+    </div>
+  </div>
 
-<label>Cliente</label>
-<select id="clienteFiltro" onchange="filtrarReferencias()">
-  <option value="">Seleccione un cliente</option>
-</select>
+  <!-- MAIN -->
+  <main class="main">
 
-<label>Referencia</label>
-<select id="referencia">
-  <option value="">Seleccione una referencia</option>
-</select>
+    <!-- FORMULARIO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🔍</div>
+        <div>
+          <h2 class="card-title">Buscar producto</h2>
+          <p class="card-sub">Seleccione el cliente y la referencia</p>
+        </div>
+      </div>
 
-<button type="button" onclick="buscar()">Buscar</button>
-<button type="button" onclick="nuevaBusqueda()" class="secundario">
-  Nueva búsqueda
-</button>
+      <div class="form-grid">
+        <div class="field">
+          <label for="clienteFiltro">Cliente</label>
+          <select id="clienteFiltro" onchange="filtrarReferencias()">
+            <option value="">Seleccione un cliente…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="referencia">Referencia / Producto</label>
+          <select id="referencia" disabled>
+            <option value="">Seleccione primero un cliente…</option>
+          </select>
+        </div>
+      </div>
 
-<hr>
+      <div id="bloqueProduccion" style="display:none;">
+        <div class="field">
+          <label for="fechaProduccion">Fecha de producción</label>
+          <input type="date" id="fechaProduccion" onchange="calcularDesdeProduccion()">
+        </div>
+      </div>
 
-<!-- =========================
-     BLOQUE PRODUCCIÓN
-========================= -->
-<div id="bloqueProduccion" style="display:none;">
-  <label>Fecha de producción</label>
-  <input type="date" id="fechaProduccion" onchange="calcularDesdeProduccion()">
-</div>
+      <div id="bloqueVidaVariable" style="display:none;">
+        <div class="field">
+          <label>Vida útil aplicable</label>
+          <div class="vida-opts">
+            <button class="vida-btn" data-val="12" onclick="selVida(this)">12 meses</button>
+            <button class="vida-btn" data-val="18" onclick="selVida(this)">18 meses <span class="tag-nitro">N₂</span></button>
+          </div>
+        </div>
+      </div>
 
-<!-- =========================
-     VIDA ÚTIL VARIABLE
-========================= -->
-<div id="bloqueVidaVariable" style="display:none;">
-  <label>Vida útil (meses)</label>
-  <select id="vidaSeleccionada" onchange="calcularDesdeProduccion()">
-    <option value="">Seleccione</option>
-    <option value="12">12 meses</option>
-    <option value="18">18 meses</option>
-  </select>
-</div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="buscar()">Consultar</button>
+        <button class="btn btn-secondary" onclick="nuevaBusqueda()">Limpiar</button>
+      </div>
+    </div>
 
-<!-- =========================
-     RESULTADO
-========================= -->
-<div class="resultado">
-  <p><strong>Cliente:</strong> <span id="cliente"></span></p>
-  <p><strong>Vida útil:</strong> <span id="vida"></span></p>
-  <p><strong>Unidad:</strong> <span id="unidad"></span></p>
-  <p><strong>Inicio vida útil:</strong> <span id="inicio"></span></p>
-  <p><strong>Embalaje:</strong> <span id="embalaje"></span></p>
-  <p><strong>Fecha de vencimiento (DD/MM/AAAA):</strong> <span id="vencimiento"></span></p>
-</div>
+    <!-- RESULTADO -->
+    <div class="card card-resultado" id="cardResultado" style="display:none;">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <div>
+          <h2 class="card-title">Resultado</h2>
+          <p class="card-sub">Información del producto seleccionado</p>
+        </div>
+      </div>
 
-<script src="app.js"></script>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Cliente</span>
+          <span class="info-val" id="rCliente">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Vida útil</span>
+          <span class="info-val" id="rVida">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Unidad de medida</span>
+          <span class="info-val" id="rUnidad">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Inicio vida útil</span>
+          <span class="info-val" id="rInicio">—</span>
+        </div>
+        <div class="info-item info-full">
+          <span class="info-label">Embalaje</span>
+          <span class="info-val" id="rEmbalaje">—</span>
+        </div>
+      </div>
 
+      <div class="venc-block" id="vencBlock" style="display:none;">
+        <div>
+          <div class="venc-label">Fecha de vencimiento</div>
+          <div class="venc-date" id="rVencimiento">—</div>
+        </div>
+        <div class="venc-icon">📅</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    Pasabocas La Victoria · Módulo interno de trazabilidad
+  </footer>
+
+  <script src="productos.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
-
-

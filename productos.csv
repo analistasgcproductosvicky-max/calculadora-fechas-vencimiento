@@ -1,4 +1,4 @@
-﻿Cliente;Descripción;Vida Útil;UNM;Inicio Vida Útil;Tipo de fechado;Embalaje
+Cliente;Descripción;Vida Útil;UNM;Inicio Vida Útil;Tipo de fechado;Embalaje
 Vicky;CEBOLLITA SUPER FAMILIAR 75g ;6;Mes;último 25;6Mesúltimo 25;Caja display X 18 unidades 
 Vicky;CEBOLLITA FAMILIAR 32g;6;Mes;último 25;6Mesúltimo 25;Caja display X 30 unidades
 Vicky;CHICHARRÓN CARNUDO FAMILIAR 110g;5;Mes;último lunes;5Mesúltimo lunes;Caja display X 24 unidades
@@ -93,7 +93,6 @@ Vicky;TOCINETA MIEL 23g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 6 display X
 Vicky;TOCINETA BBQ 23g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 6 display X 12 unidades por display 
 Vicky;TOCINETA LIMÓN 23g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 6 display X 12 unidades por display 
 Vicky;TOCINETA SUPER 55 g ;6;Mes;último 25;6Mesúltimo 25;Caja display x 24 unidades 
-Vicky;TOCINETA SUPER 55 g ;6;Mes;último 25;6Mesúltimo 25;Caja display x 24 unidades 
 Vicky;CONITO TRI LIMON 30 g ;6;Mes;último 25;6Mesúltimo 25;Caja negra x 10 display x 8 unidades por display
 Vicky;CONITO TRI LIMON 30 g ;6;Mes;último 25;6Mesúltimo 25;Caja displau x 8 ristras x 8 unidades por ristra
 Vicky;TROCILLO SABOR LIMÓN 14g;4;Mes;último lunes;4Mesúltimo lunes;Bolsa bulto trocillo X 20 display X 12 unidades por display 
@@ -154,10 +153,10 @@ Mercacentro;PAPAS LISAS SABOR LIMON 105g;6;Mes;último 25;6Mesúltimo 25;Caja di
 Mercacentro;PAPAS LISAS SABOR POLLO 105g;6;Mes;último 25;6Mesúltimo 25;Caja display X 20 unidades 
 Mercacentro;MIX SABOR NATURAL 160g;6;Mes;último 25;6Mesúltimo 25;Caja display X 14 unidades 
 Mercacentro;MIX SABOR BBQ 160 g ;6;Mes;último 25;6Mesúltimo 25;Caja display X 14 unidades 
-Cencosud;CHICHARRON  CUISINE & CO 100 g;6;Mes;último 25;6Mesúltimo 25;Caja azul X 20 unidades 
+Cencosud;CHICHARRON  CUISINE & CO 100 g;6;Mes;último 25;6Mesúltimo 25;Caja azul X 20 unidades 
 Cencosud;MIXTO BBQ CUISINE & CO 450 g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 8 unidades
 Cencosud;MIXTO NATURAL CUISINE & CO 450 g;6;Mes;último 25;6Mesúltimo 25;Caja negra X 8 unidades
-Cencosud;PLATANOS VERDES CUISINE & CO 140  g;6;Mes;último 25;6Mesúltimo 25;Caja display X 24 unidades 
+Cencosud;PLATANOS VERDES CUISINE & CO 140  g;6;Mes;último 25;6Mesúltimo 25;Caja display X 24 unidades 
 Cencosud;PAPA BBQ 115g;6;Mes;último 25;6Mesúltimo 25;Caja display X 20 unidades 
 Cencosud;PAPA NATURAL 115g;6;Mes;último 25;6Mesúltimo 25;Caja display X 20 unidades 
 Cencosud;PAPA POLLO 115g;6;Mes;último 25;6Mesúltimo 25;Caja display X 20 unidades 
@@ -277,6 +276,3 @@ Monterojo;EXTRUIDO NATURAL 10g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitr�
 Monterojo;EXTRUIDO CARAMELO  40g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitrógeno)MesFecha de producción;Caja propia x 18 unidades
 Monterojo;EXTRUIDO QUESO 40g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitrógeno)MesFecha de producción;Caja propia x 18 unidades
 Monterojo;EXTRUIDO NATURAL 40g ;6 (nitrógeno);Mes;Fecha de producción;6 (nitrógeno)MesFecha de producción;Caja propia x 18 unidades
-
-
-
