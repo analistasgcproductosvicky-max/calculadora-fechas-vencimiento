@@ -99,6 +99,10 @@ body {
   color: rgba(255,255,255,.7);
   max-width: 420px;
 }
+.hero-date-sep {
+  color: rgba(255,255,255,.3);
+  margin: 0 2px;
+}
 .hero-date {
   display: flex;
   align-items: center;
