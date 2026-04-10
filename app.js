@@ -62,7 +62,17 @@ function splitCSVLine(line, sep) {
    FECHA HOY
 ============================================= */
 function mostrarFechaHoy() {
-  document.getElementById("fechaHoy").textContent = formatearFecha(new Date());
+  const hoy = new Date();
+  document.getElementById("fechaHoy").textContent = formatearFecha(hoy);
+
+  // Semana del año (ISO)
+  const inicio = new Date(hoy.getFullYear(), 0, 1);
+  const semana = Math.ceil(((hoy - inicio) / 86400000 + inicio.getDay() + 1) / 7);
+  document.getElementById("semanaAnio").textContent = semana;
+
+  // Día juliano (día del año)
+  const diff = hoy - new Date(hoy.getFullYear(), 0, 0);
+  document.getElementById("diaJuliano").textContent = Math.floor(diff / 86400000);
 }
 
 /* =============================================
