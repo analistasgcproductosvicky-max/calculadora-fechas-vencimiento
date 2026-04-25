@@ -510,3 +510,49 @@ select:disabled { opacity: .45; cursor: not-allowed; }
 .autocomplete-dropdown::-webkit-scrollbar { width: 5px; }
 .autocomplete-dropdown::-webkit-scrollbar-track { background: transparent; }
 .autocomplete-dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* =============================================
+   TABLA BÚSQUEDA GLOBAL
+============================================= */
+.tabla-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.tabla-global {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.tabla-global thead {
+  background: var(--blue);
+  color: #fff;
+}
+.tabla-global th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tabla-global td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text);
+  line-height: 1.4;
+}
+.tabla-global tbody tr:last-child td { border-bottom: none; }
+.tabla-global tbody tr:hover { background: var(--blue-light); }
+.tabla-global td:first-child {
+  font-weight: 600;
+  color: var(--blue);
+  white-space: nowrap;
+}
+.tabla-contador {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
