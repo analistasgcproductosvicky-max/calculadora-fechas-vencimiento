@@ -65,10 +65,13 @@ function mostrarFechaHoy() {
   const hoy = new Date();
   document.getElementById("fechaHoy").textContent = formatearFecha(hoy);
 
-  // Semana del año (ISO)
-  const inicio = new Date(hoy.getFullYear(), 0, 1);
-  const semana = Math.ceil(((hoy - inicio) / 86400000 + inicio.getDay() + 1) / 7);
-  document.getElementById("semanaAnio").textContent = semana;
+// Semana ISO correcta
+const fecha = new Date(hoy.getTime());
+fecha.setHours(0, 0, 0, 0);
+fecha.setDate(fecha.getDate() + 3 - (fecha.getDay() + 6) % 7);
+const semanaBase = new Date(fecha.getFullYear(), 0, 4);
+const semana = 1 + Math.round(((fecha - semanaBase) / 86400000 - 3 + (semanaBase.getDay() + 6) % 7) / 7);
+document.getElementById("semanaAnio").textContent = semana;
 
   // Día juliano (día del año)
   const diff = hoy - new Date(hoy.getFullYear(), 0, 0);
