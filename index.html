@@ -99,7 +99,49 @@
         <button class="btn btn-secondary" onclick="nuevaBusqueda()">Limpiar</button>
       </div>
     </div>
-
+<!-- BUSCADOR POR PRODUCTO -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-icon">🔎</div>
+    <div>
+      <h2 class="card-title">Buscar por nombre de producto</h2>
+      <p class="card-sub">Si no sabe el cliente, busque directamente por nombre</p>
+    </div>
+  </div>
+  <div class="field">
+    <label for="busquedaGlobalInput">Nombre del producto</label>
+    <div class="autocomplete-wrap" id="globalWrap">
+      <input
+        type="text"
+        id="busquedaGlobalInput"
+        placeholder="Ej: papa BBQ, chicharrón, mixto…"
+        autocomplete="off"
+        oninput="filtrarGlobal()"
+        onfocus="mostrarDropdownGlobal()"
+      >
+      <span class="ac-clear" id="globalClear" onclick="limpiarGlobal()" title="Limpiar">✕</span>
+      <div class="autocomplete-dropdown" id="globalDropdown"></div>
+    </div>
+  </div>
+  <!-- Resultado global -->
+  <div id="globalResultado" style="display:none; margin-top:16px;">
+    <div class="tabla-wrap">
+      <table class="tabla-global">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Producto</th>
+            <th>Vida útil</th>
+            <th>Inicio</th>
+            <th>Embalaje</th>
+          </tr>
+        </thead>
+        <tbody id="tablaGlobalBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+    
     <!-- RESULTADO -->
     <div class="card card-resultado" id="cardResultado" style="display:none;">
       <div class="card-header">
