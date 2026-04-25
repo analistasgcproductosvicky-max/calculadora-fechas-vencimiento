@@ -358,6 +358,7 @@ select:disabled { opacity: .45; cursor: not-allowed; }
   font-size: 14px;
   font-weight: 500;
   color: var(--text);
+  white-space: pre-line;  /* ← esta línea */
 }
 
 /* =============================================
