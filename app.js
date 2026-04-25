@@ -249,7 +249,9 @@ function buscar() {
     return;
   }
 
-  const prod = productos.find(p => p.Descripción.trim() === refVal.trim());
+  const coincidencias = productos.filter(p => p.Descripción.trim() === refVal.trim());
+if (!coincidencias.length) { sacudir(document.getElementById("referenciaInput")); return; }
+const prod = coincidencias[0];
   if (!prod) {
     sacudir(document.getElementById("referenciaInput"));
     return;
@@ -263,7 +265,9 @@ function buscar() {
   document.getElementById("rVida").textContent     = prod["Vida Útil"] + " " + prod.UNM;
   document.getElementById("rUnidad").textContent   = prod.UNM;
   document.getElementById("rInicio").textContent   = prod["Inicio Vida Útil"];
-  document.getElementById("rEmbalaje").textContent = prod.Embalaje;
+  const embalajes = coincidencias.map((p, i) => `${i + 1}. ${p.Embalaje}`).join("\n");
+  document.getElementById("rEmbalaje").textContent = embalajes;
+
 
   mostrarCard("cardResultado");
   ocultarVencimiento();
