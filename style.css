@@ -187,6 +187,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 16px;
+  align-items: start;
 }
 @media (max-width: 560px) {
   .form-grid { grid-template-columns: 1fr; }
@@ -430,6 +431,7 @@ select:disabled { opacity: .45; cursor: not-allowed; }
 ============================================= */
 .autocomplete-wrap {
   position: relative;
+   z-index: 50; 
 }
 .autocomplete-wrap input[type="text"] {
   background: #f7f9fc;
