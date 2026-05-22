@@ -2,6 +2,8 @@
    CARGA DEL CSV
 ============================================= */
 let productos = [];
+let productoActual = null; // producto seleccionado actualmente
+let vidaSeleccionadaVal = null;
 
 fetch("productos.csv")
   .then(r => {
@@ -15,7 +17,7 @@ fetch("productos.csv")
   .catch(err => console.error("Error cargando CSV:", err));
 
 /* =============================================
-   PARSE CSV  (soporta coma y punto y coma)
+   PARSE CSV
 ============================================= */
 function parsearCSV(raw) {
   const filas = raw.trim().split("\n");
@@ -75,7 +77,7 @@ function mostrarFechaHoy() {
 }
 
 /* =============================================
-   BÚSQUEDA GLOBAL POR PRODUCTO
+   BÚSQUEDA GLOBAL
 ============================================= */
 function filtrarGlobal() {
   const query = document.getElementById("busquedaGlobalInput").value.trim();
@@ -83,7 +85,7 @@ function filtrarGlobal() {
 
   if (!query) {
     cerrarDropdownGlobal();
-    document.getElementById("globalResultado").style.display = "none";
+    ocultarTodo();
     return;
   }
 
@@ -110,7 +112,6 @@ function renderDropdownGlobal(lista, query) {
     return;
   }
 
-  // Agrupar por descripción única
   const unicas = [...new Map(lista.map(p => [p.Descripción.trim(), p])).values()];
 
   dd.innerHTML = unicas.slice(0, 30).map(p =>
@@ -127,9 +128,17 @@ function seleccionarGlobal(el) {
   document.getElementById("busquedaGlobalInput").value = desc;
   document.getElementById("globalWrap").classList.add("has-value");
   cerrarDropdownGlobal();
+
+  // Guardar el primer producto como referencia para el cálculo
+  productoActual = productos.find(p => p.Descripción.trim() === desc);
+
   mostrarTablaGlobal(desc);
+  aplicarReglasVencimiento(productoActual);
 }
 
+/* =============================================
+   TABLA DE EMBALAJES
+============================================= */
 function mostrarTablaGlobal(desc) {
   const filas = productos.filter(p => p.Descripción.trim() === desc);
   const tbody = document.getElementById("tablaGlobalBody");
@@ -156,11 +165,150 @@ function mostrarTablaGlobal(desc) {
   contador.textContent = `${filas.length} embalaje${filas.length !== 1 ? "s" : ""} encontrado${filas.length !== 1 ? "s" : ""}`;
 }
 
+/* =============================================
+   REGLAS DE VENCIMIENTO
+============================================= */
+function aplicarReglasVencimiento(prod) {
+  ocultarBloques();
+  ocultarVencimiento();
+
+  const cliente = prod.Cliente.toLowerCase();
+  const inicio  = prod["Inicio Vida Útil"].toLowerCase();
+
+  // ÉXITO → fecha de producción + 149 días
+  if (cliente.includes("exito") || cliente.includes("éxito")) {
+    mostrarBloque("bloqueProduccion", "exito");
+    mostrarBloque("bloqueBoton");
+    return;
+  }
+
+  // DESDE PRODUCCIÓN (meses)
+  if (inicio.includes("producción")) {
+    mostrarBloque("bloqueProduccion");
+    mostrarBloque("bloqueBoton");
+    const tieneVidaVar = prod["Vida Útil"].includes("12") && prod["Vida Útil"].includes("18");
+    if (tieneVidaVar) mostrarBloque("bloqueVidaVariable");
+    return;
+  }
+
+  // ÚLTIMO 25 → cálculo automático
+  if (inicio.includes("25")) {
+    mostrarVencimiento(calcularUltimo25(prod));
+    return;
+  }
+
+  // ÚLTIMO LUNES → cálculo automático
+  if (inicio.includes("lunes")) {
+    mostrarVencimiento(calcularUltimoLunes(prod));
+  }
+}
+
+/* =============================================
+   CÁLCULOS
+============================================= */
+function calcularUltimo25(prod) {
+  const meses = extraerNumero(prod["Vida Útil"]);
+  const hoy = new Date();
+  const base = hoy.getDate() >= 25
+    ? new Date(hoy.getFullYear(), hoy.getMonth(), 25)
+    : new Date(hoy.getFullYear(), hoy.getMonth() - 1, 25);
+  base.setMonth(base.getMonth() + meses);
+  return base;
+}
+
+function calcularUltimoLunes(prod) {
+  const meses = extraerNumero(prod["Vida Útil"]);
+  const hoy = new Date();
+  const diasAtras = hoy.getDay() === 1 ? 0 : (hoy.getDay() + 6) % 7;
+  let base = new Date(hoy);
+  base.setDate(hoy.getDate() - diasAtras);
+  base.setMonth(base.getMonth() + meses);
+  return base;
+}
+
+function calcularDesdeProduccion() {
+  const f = document.getElementById("fechaProduccion").value;
+  if (!f || !productoActual) return;
+
+  const bloqueProd = document.getElementById("bloqueProduccion");
+  const modo = bloqueProd.dataset.modo || "";
+  const [y, m, d] = f.split("-");
+  let fecha = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+
+  // Éxito: +149 días
+  if (modo === "exito") {
+    fecha.setDate(fecha.getDate() + 149);
+    mostrarVencimiento(fecha);
+    return;
+  }
+
+  // Vida variable
+  const bloqueVida = document.getElementById("bloqueVidaVariable");
+  if (bloqueVida.style.display !== "none") {
+    if (!vidaSeleccionadaVal) { sacudir(bloqueVida); return; }
+    fecha.setMonth(fecha.getMonth() + parseInt(vidaSeleccionadaVal));
+  } else {
+    const meses = extraerNumero(productoActual["Vida Útil"]);
+    if (!meses) return;
+    fecha.setMonth(fecha.getMonth() + meses);
+  }
+
+  mostrarVencimiento(fecha);
+}
+
+function selVida(btn) {
+  document.querySelectorAll(".vida-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  vidaSeleccionadaVal = btn.dataset.val;
+}
+
+/* =============================================
+   UTILIDADES UI
+============================================= */
+function mostrarBloque(id, modo) {
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  if (modo) el.dataset.modo = modo;
+  else delete el.dataset.modo;
+}
+
+function ocultarBloques() {
+  ["bloqueProduccion", "bloqueVidaVariable", "bloqueBoton"].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.display = "none";
+    delete el.dataset.modo;
+  });
+  document.getElementById("fechaProduccion").value = "";
+  vidaSeleccionadaVal = null;
+  document.querySelectorAll(".vida-btn").forEach(b => b.classList.remove("active"));
+}
+
+function mostrarVencimiento(fecha) {
+  document.getElementById("rVencimiento").textContent = formatearFecha(fecha);
+  const blk = document.getElementById("vencBlock");
+  blk.style.display = "flex";
+  blk.style.animation = "none";
+  void blk.offsetWidth;
+  blk.style.animation = "fadeUp .3s ease both";
+}
+
+function ocultarVencimiento() {
+  document.getElementById("vencBlock").style.display = "none";
+  document.getElementById("rVencimiento").textContent = "—";
+}
+
+function ocultarTodo() {
+  document.getElementById("globalResultado").style.display = "none";
+  ocultarBloques();
+  ocultarVencimiento();
+  productoActual = null;
+}
+
 function limpiarGlobal() {
   document.getElementById("busquedaGlobalInput").value = "";
   document.getElementById("globalWrap").classList.remove("has-value");
-  document.getElementById("globalResultado").style.display = "none";
   cerrarDropdownGlobal();
+  ocultarTodo();
 }
 
 function cerrarDropdownGlobal() {
@@ -169,7 +317,6 @@ function cerrarDropdownGlobal() {
   dd.innerHTML = "";
 }
 
-// Cerrar al hacer clic fuera
 document.addEventListener("click", function(e) {
   if (!document.getElementById("globalWrap")?.contains(e.target)) {
     cerrarDropdownGlobal();
@@ -177,7 +324,7 @@ document.addEventListener("click", function(e) {
 });
 
 /* =============================================
-   UTILIDADES
+   UTILIDADES DATOS
 ============================================= */
 function resaltar(texto, query) {
   if (!query) return texto;
@@ -192,6 +339,11 @@ function resaltar(texto, query) {
 
 function escaparAttr(str) {
   return str.replace(/"/g, '&quot;');
+}
+
+function extraerNumero(texto) {
+  const n = String(texto).match(/\d+/);
+  return n ? parseInt(n[0]) : 0;
 }
 
 function formatearFecha(f) {

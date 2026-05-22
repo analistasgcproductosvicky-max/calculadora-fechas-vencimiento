@@ -40,7 +40,7 @@
   <!-- MAIN -->
   <main class="main">
 
-    <!-- BUSCADOR POR PRODUCTO -->
+    <!-- BUSCADOR -->
     <div class="card">
       <div class="card-header">
         <div class="card-icon">🔎</div>
@@ -49,6 +49,7 @@
           <p class="card-sub">Escriba el nombre o parte del nombre del producto</p>
         </div>
       </div>
+
       <div class="field">
         <label for="busquedaGlobalInput">Nombre del producto</label>
         <div class="autocomplete-wrap" id="globalWrap">
@@ -60,12 +61,12 @@
             oninput="filtrarGlobal()"
             onfocus="mostrarDropdownGlobal()"
           >
-          <span class="ac-clear" id="globalClear" onclick="limpiarGlobal()" title="Limpiar">✕</span>
+          <span class="ac-clear" onclick="limpiarGlobal()" title="Limpiar">✕</span>
           <div class="autocomplete-dropdown" id="globalDropdown"></div>
         </div>
       </div>
 
-      <!-- Resultado global -->
+      <!-- Tabla de embalajes -->
       <div id="globalResultado" style="display:none; margin-top:16px;">
         <div class="tabla-wrap">
           <table class="tabla-global">
@@ -82,6 +83,43 @@
           </table>
         </div>
       </div>
+
+      <!-- Fecha de producción (condicional) -->
+      <div id="bloqueProduccion" style="display:none;">
+        <div class="field">
+          <label for="fechaProduccion">Fecha de producción</label>
+          <input type="date" id="fechaProduccion">
+        </div>
+      </div>
+
+      <!-- Vida útil variable (condicional) -->
+      <div id="bloqueVidaVariable" style="display:none;">
+        <div class="field">
+          <label>Vida útil aplicable</label>
+          <div class="vida-opts">
+            <button class="vida-btn" data-val="12" onclick="selVida(this)">12 meses</button>
+            <button class="vida-btn" data-val="18" onclick="selVida(this)">18 meses <span class="tag-nitro">N₂</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón calcular (solo para productos con fecha de producción) -->
+      <div id="bloqueBoton" style="display:none;">
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="calcularDesdeProduccion()">Calcular vencimiento</button>
+          <button class="btn btn-secondary" onclick="limpiarGlobal()">Limpiar</button>
+        </div>
+      </div>
+
+      <!-- Resultado de vencimiento -->
+      <div class="venc-block" id="vencBlock" style="display:none;">
+        <div>
+          <div class="venc-label">Fecha de vencimiento</div>
+          <div class="venc-date" id="rVencimiento">—</div>
+        </div>
+        <div class="venc-icon">📅</div>
+      </div>
+
     </div>
 
   </main>
