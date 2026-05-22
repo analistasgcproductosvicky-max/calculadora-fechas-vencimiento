@@ -2,11 +2,11 @@
    VARIABLES — Paleta La Victoria / Vicky
 ============================================= */
 :root {
-  --blue:       #1a3a6b;   /* azul corporativo navbar */
+  --blue:       #1a3a6b;
   --blue-mid:   #1e4fa0;
   --blue-light: #e8eef8;
-  --red:        #c0302a;   /* rojo Vicky */
-  --yellow:     #f5c400;   /* amarillo La Victoria */
+  --red:        #c0302a;
+  --yellow:     #f5c400;
   --bg:         #f0f2f6;
   --surface:    #ffffff;
   --border:     #dde3ee;
@@ -149,9 +149,8 @@ body {
   box-shadow: var(--shadow);
   padding: 28px;
   animation: fadeUp .35s ease both;
-   overflow: visible;
+  overflow: visible;
 }
-
 .card-header {
   display: flex;
   align-items: flex-start;
@@ -182,17 +181,6 @@ body {
 /* =============================================
    FORM
 ============================================= */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-  align-items: start;
-}
-@media (max-width: 560px) {
-  .form-grid { grid-template-columns: 1fr; }
-}
-
 .field { display: flex; flex-direction: column; }
 .field label {
   font-size: 12px;
@@ -202,7 +190,7 @@ body {
   letter-spacing: .06em;
   margin-bottom: 6px;
 }
-select, input[type="date"], input[type="text"] {
+input[type="text"] {
   background: #f7f9fc;
   border: 1.5px solid var(--border);
   border-radius: 8px;
@@ -215,186 +203,14 @@ select, input[type="date"], input[type="text"] {
   width: 100%;
   appearance: none;
   -webkit-appearance: none;
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7a99' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 34px;
+  cursor: text;
 }
-input[type="date"] {
-  background-image: none;
-  padding-right: 14px;
-  cursor: default;
-}
-select:focus, input[type="date"]:focus {
+input[type="text"]:focus {
   border-color: var(--blue-mid);
   box-shadow: 0 0 0 3px rgba(30,79,160,.12);
   background-color: #fff;
 }
-select:disabled { opacity: .45; cursor: not-allowed; }
-
-/* bloque extra con separador visual */
-#bloqueProduccion, #bloqueVidaVariable {
-  padding-top: 16px;
-  margin-top: 4px;
-  border-top: 1px dashed var(--border);
-}
-
-/* =============================================
-   VIDA ÚTIL VARIABLE
-============================================= */
-.vida-opts {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.vida-btn {
-  flex: 1;
-  min-width: 120px;
-  padding: 10px 16px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  background: #f7f9fc;
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all .18s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.vida-btn:hover { border-color: var(--blue-mid); color: var(--blue); }
-.vida-btn.active {
-  border-color: var(--blue-mid);
-  background: var(--blue-light);
-  color: var(--blue);
-  font-weight: 600;
-}
-.tag-nitro {
-  font-size: 11px;
-  background: var(--yellow);
-  color: #5a3e00;
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-weight: 700;
-}
-
-/* =============================================
-   BOTONES
-============================================= */
-.btn-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 22px;
-  flex-wrap: wrap;
-}
-.btn {
-  padding: 11px 28px;
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .18s;
-}
-.btn-primary {
-  background: var(--blue);
-  color: #fff;
-}
-.btn-primary:hover {
-  background: var(--blue-mid);
-  box-shadow: 0 4px 14px rgba(26,58,107,.3);
-  transform: translateY(-1px);
-}
-.btn-primary:active { transform: translateY(0); }
-.btn-secondary {
-  background: transparent;
-  border: 1.5px solid var(--border);
-  color: var(--muted);
-}
-.btn-secondary:hover { border-color: var(--muted); color: var(--text); }
-
-/* =============================================
-   RESULTADO — INFO GRID
-============================================= */
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-@media (max-width: 480px) {
-  .info-grid { grid-template-columns: 1fr; }
-}
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-}
-.info-item:nth-child(even) { border-right: none; }
-.info-item:last-child,
-.info-item:nth-last-child(2):not(.info-full) { border-bottom: none; }
-.info-full {
-  grid-column: 1 / -1;
-  border-right: none;
-  border-bottom: none;
-}
-.info-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .07em;
-}
-.info-val {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  white-space: pre-line;  /* ← esta línea */
-}
-
-/* =============================================
-   VENCIMIENTO DESTACADO
-============================================= */
-.venc-block {
-  background: linear-gradient(120deg, #e8f0fb 0%, #dceaff 100%);
-  border: 2px solid var(--blue-mid);
-  border-radius: 10px;
-  padding: 18px 22px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  animation: fadeUp .3s ease both;
-}
-.venc-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--blue-mid);
-  margin-bottom: 4px;
-}
-.venc-date {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--blue);
-  letter-spacing: .02em;
-}
-.venc-icon {
-  font-size: 32px;
-  opacity: .75;
-}
+input[type="text"]:disabled { opacity: .45; cursor: not-allowed; }
 
 /* =============================================
    FOOTER
@@ -431,19 +247,11 @@ select:disabled { opacity: .45; cursor: not-allowed; }
 ============================================= */
 .autocomplete-wrap {
   position: relative;
-   z-index: 50; 
+  z-index: 50;
 }
 .autocomplete-wrap input[type="text"] {
-  background: #f7f9fc;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
   background-image: none;
   padding-right: 32px;
-}
-}
-.autocomplete-wrap input[type="text"]:disabled {
-  opacity: .45;
-  cursor: not-allowed;
 }
 
 /* Botón X para limpiar */
@@ -492,7 +300,6 @@ select:disabled { opacity: .45; cursor: not-allowed; }
 .ac-item:last-child { border-bottom: none; }
 .ac-item:hover, .ac-item.active { background: var(--blue-light); color: var(--blue); }
 
-/* Resaltado del texto coincidente */
 .ac-item mark {
   background: var(--yellow);
   color: #3a2800;
@@ -501,7 +308,6 @@ select:disabled { opacity: .45; cursor: not-allowed; }
   font-style: normal;
   font-weight: 600;
 }
-
 .ac-empty {
   padding: 12px 14px;
   font-size: 13px;
@@ -509,7 +315,7 @@ select:disabled { opacity: .45; cursor: not-allowed; }
   text-align: center;
 }
 
-/* Scrollbar del dropdown */
+/* Scrollbar */
 .autocomplete-dropdown::-webkit-scrollbar { width: 5px; }
 .autocomplete-dropdown::-webkit-scrollbar-track { background: transparent; }
 .autocomplete-dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
