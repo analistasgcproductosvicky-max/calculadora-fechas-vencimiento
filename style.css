@@ -438,7 +438,7 @@ select:disabled { opacity: .45; cursor: not-allowed; }
   background-image: none;
   padding-right: 32px;
 }
-}
+
 .autocomplete-wrap input[type="text"]:disabled {
   opacity: .45;
   cursor: not-allowed;
