@@ -149,6 +149,7 @@ body {
   box-shadow: var(--shadow);
   padding: 28px;
   animation: fadeUp .35s ease both;
+   overflow: visible;
 }
 
 .card-header {
