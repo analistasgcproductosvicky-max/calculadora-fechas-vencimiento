@@ -65,7 +65,15 @@
           <div class="autocomplete-dropdown" id="globalDropdown"></div>
         </div>
       </div>
-
+      
+      <!-- Observaciones -->
+      <div id="bloqueObservaciones" style="display:none; padding-top:16px; margin-top:12px; border-top:1px dashed var(--border);">
+        <div class="field">
+          <label>Observaciones</label>
+          <div class="obs-texto" id="obsTexto"></div>
+        </div>
+      </div>
+      
       <!-- Tabla de embalajes -->
       <div id="globalResultado" style="display:none; margin-top:16px;">
         <div class="tabla-wrap">
@@ -108,14 +116,6 @@
         <div class="btn-row">
           <button class="btn btn-primary" onclick="calcularDesdeProduccion()">Calcular vencimiento</button>
           <button class="btn btn-secondary" onclick="limpiarGlobal()">Limpiar</button>
-        </div>
-      </div>
-
-      <!-- Observaciones -->
-      <div id="bloqueObservaciones" style="display:none; padding-top:16px; margin-top:12px; border-top:1px dashed var(--border);">
-        <div class="field">
-          <label>Observaciones</label>
-          <div class="obs-texto" id="obsTexto"></div>
         </div>
       </div>
 
