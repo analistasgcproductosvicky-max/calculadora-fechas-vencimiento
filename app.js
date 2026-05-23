@@ -295,7 +295,7 @@ function mostrarBloque(id, modo) {
 }
 
 function ocultarBloques() {
-  ["bloqueProduccion", "bloqueVidaVariable", "bloqueBoton", "bloqueObservaciones"].forEach(id => {
+  ["bloqueProduccion", "bloqueVidaVariable", "bloqueBoton"].forEach(id => {
     const el = document.getElementById(id);
     el.style.display = "none";
     delete el.dataset.modo;
@@ -321,6 +321,7 @@ function ocultarVencimiento() {
 
 function ocultarTodo() {
   document.getElementById("globalResultado").style.display = "none";
+  document.getElementById("bloqueObservaciones").style.display = "none";
   ocultarBloques();
   ocultarVencimiento();
   productoActual = null;
