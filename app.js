@@ -133,6 +133,7 @@ function seleccionarGlobal(el) {
   productoActual = productos.find(p => p.Descripción.trim() === desc);
 
   mostrarTablaGlobal(desc);
+  mostrarObservaciones(productoActual);
   aplicarReglasVencimiento(productoActual);
 }
 
@@ -265,6 +266,18 @@ function selVida(btn) {
 /* =============================================
    UTILIDADES UI
 ============================================= */
+function mostrarObservaciones(prod) {
+  const obs = prod.Observaciones || "";
+  const bloque = document.getElementById("bloqueObservaciones");
+  const texto = document.getElementById("obsTexto");
+  if (obs.trim()) {
+    texto.textContent = obs.trim();
+    bloque.style.display = "block";
+  } else {
+    bloque.style.display = "none";
+  }
+}
+
 function mostrarBloque(id, modo) {
   const el = document.getElementById(id);
   el.style.display = "block";
@@ -273,7 +286,7 @@ function mostrarBloque(id, modo) {
 }
 
 function ocultarBloques() {
-  ["bloqueProduccion", "bloqueVidaVariable", "bloqueBoton"].forEach(id => {
+  ["bloqueProduccion", "bloqueVidaVariable", "bloqueBoton", "bloqueObservaciones"].forEach(id => {
     const el = document.getElementById(id);
     el.style.display = "none";
     delete el.dataset.modo;
