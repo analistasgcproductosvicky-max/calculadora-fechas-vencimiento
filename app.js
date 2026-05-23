@@ -133,7 +133,7 @@ function seleccionarGlobal(el) {
   productoActual = productos.find(p => p.Descripción.trim() === desc);
 
   mostrarTablaGlobal(desc);
-  mostrarObservaciones(productoActual);
+  mostrarObservaciones(desc);
   aplicarReglasVencimiento(productoActual);
 }
 
@@ -266,11 +266,20 @@ function selVida(btn) {
 /* =============================================
    UTILIDADES UI
 ============================================= */
-function mostrarObservaciones(prod) {
-  const obs = prod.Observaciones || "";
+function mostrarObservaciones(desc) {
+  const filas = productos.filter(p => p.Descripción.trim() === desc);
+  
+  // Buscar la primera fila que tenga observación
+  const conObs = filas.find(p => {
+    const obs = p["Observaciones"] || p["observaciones"] || "";
+    return obs.trim() !== "";
+  });
+
   const bloque = document.getElementById("bloqueObservaciones");
-  const texto = document.getElementById("obsTexto");
-  if (obs.trim()) {
+  const texto  = document.getElementById("obsTexto");
+
+  if (conObs) {
+    const obs = conObs["Observaciones"] || conObs["observaciones"] || "";
     texto.textContent = obs.trim();
     bloque.style.display = "block";
   } else {
